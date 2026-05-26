@@ -1,0 +1,53 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/pages.css";
+
+import AboutHero from "../components/about/AboutHero.astro";
+import WhoWeAre from "../components/about/WhoWeAre.astro";
+import MissionVisionValues from "../components/about/MissionVisionValues.astro";
+import Team from "../components/about/Team.astro";
+import AboutCta from "../components/about/AboutCta.astro";
+---
+
+<BaseLayout title="Sobre | Vistopred">
+  <Fragment slot="head">
+    {/* Carrega model-viewer (web component oficial Google) só nessa página */}
+    <script
+      type="module"
+      src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"
+      is:inline
+    ></script>
+  </Fragment>
+
+  <AboutHero />
+  <WhoWeAre />
+  <MissionVisionValues />
+  <Team />
+  <AboutCta />
+</BaseLayout>
+
+<script>
+  /**
+   * Sistema simples de reveal-on-scroll.
+   * Usa IntersectionObserver pra adicionar .is-in nos elementos [data-reveal].
+   * O delay de cada item é controlado via inline style="--reveal-delay: 80ms".
+   * Respeita prefers-reduced-motion (CSS já trata).
+   */
+  const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+  if (els.length && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+  } else {
+    els.forEach((el) => el.classList.add("is-in"));
+  }
+</script>

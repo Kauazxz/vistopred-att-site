@@ -1,0 +1,35 @@
+---
+import AppCarousel from "./AppCarousel.svelte";
+
+const images = [
+  { src: "/images/home/prints/3.svg", alt: "Tela do app 1" },
+  { src: "/images/home/prints/4.svg", alt: "Tela do app 2" },
+  { src: "/images/home/prints/2.svg", alt: "Tela do app 3" },
+  { src: "/images/home/prints/5.svg", alt: "Tela do app 4" },
+  { src: "/images/home/prints/6.svg", alt: "Tela do app 5" },
+  { src: "/images/home/prints/7.svg", alt: "Tela do app 6" },
+  { src: "/images/home/prints/8.svg", alt: "Tela do app 7" },
+  { src: "/images/home/prints/9.svg", alt: "Tela do app 8" },
+  { src: "/images/home/prints/10.svg", alt: "Tela do app 9" },
+  { src: "/images/home/prints/1.svg", alt: "Tela do app 10" },
+];
+---
+
+<section class="section">
+  <div class="prints-head">
+  <h2>PRÉVIA DO APP</h2>
+
+  <p class="prints-subtitle">
+    Veja algumas telas do Vistopred e entenda como a plataforma funciona
+    na prática para facilitar a gestão predial.
+  </p>
+</div>
+
+    <AppCarousel images={images} visible={3} client:idle />
+
+    <div class="prints-cta">
+  <a class="btn-primary" href="/solucoes">Visualizar soluções</a>
+</div>
+
+  </div>
+</section>

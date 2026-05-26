@@ -1,0 +1,35 @@
+---
+const whats = "https://wa.me/5524998773164";
+---
+
+<section class="page-section solutions-cta-section">
+  <div class="page-container">
+    <div class="page-cta solutions-cta" data-reveal="up">
+      <h2 class="page-cta__title">
+        Quer ver como essas soluções funcionam na prática?
+      </h2>
+      <p class="page-cta__sub">
+        Agende uma demonstração e conheça o VistoPred funcionando na rotina
+        da sua edificação — ou fale agora com um consultor pelo WhatsApp.
+      </p>
+
+      <div class="page-cta__actions">
+        <a class="page-btn page-btn--primary" href="/contato">
+          Solicitar demonstração
+        </a>
+        <a class="page-btn page-btn--whats" href={whats} target="_blank" rel="noopener">
+          Falar no WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .solutions-cta-section { padding-top: 40px; padding-bottom: 80px; }
+  .solutions-cta { max-width: 880px; margin: 0 auto; }
+
+  @media (max-width: 880px) {
+    .solutions-cta-section { padding-bottom: 56px; }
+  }
+</style>

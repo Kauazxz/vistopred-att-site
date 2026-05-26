@@ -1,0 +1,134 @@
+<section class="page-hero about-hero">
+  {/* Glow sutil ao fundo (override do glow padrão do page-hero pra ficar do lado direito) */}
+  <div class="about-hero__bg" aria-hidden="true"></div>
+
+  <div class="page-container about-hero__grid">
+    <div class="about-hero__copy">
+      <span class="page-hero__eyebrow" data-reveal="up" style="--reveal-delay: 0ms">VistoPred</span>
+      <h1 class="page-hero__title" data-reveal="up" style="--reveal-delay: 100ms">
+        A <em>VistoPred</em>
+      </h1>
+      <p class="page-hero__sub about-hero__lead" data-reveal="up" style="--reveal-delay: 200ms">
+        A VistoPred é uma startup criada em 2017 com o objetivo de facilitar a manutenção e
+        vistoria predial. Nossa missão é tornar-nos referência nacional na classificação de
+        edificações e ser uma ferramenta indispensável para vistorias prediais, industriais e
+        patrimoniais. Com o nosso aplicativo, o VistoPred, os usuários têm acesso a pré-vistorias
+        ágeis e completas.
+      </p>
+    </div>
+
+    <div class="about-hero__visual" data-reveal="scale" style="--reveal-delay: 300ms">
+      <div class="about-hero__visual-glow" aria-hidden="true"></div>
+      <model-viewer
+        src="/models/vistopred-logo.glb"
+        alt="Logo VistoPred 3D"
+        auto-rotate
+        auto-rotate-delay="0"
+        rotation-per-second="20deg"
+        camera-controls
+        disable-zoom
+        interaction-prompt="none"
+        shadow-intensity="0.6"
+        exposure="1.1"
+        loading="eager"
+        reveal="auto"
+        class="logo-3d"
+      ></model-viewer>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Override do hero pra ter 2 colunas (copy + 3D) em vez de centralizado */
+  .about-hero {
+    text-align: left;
+    padding: 56px 0 48px;
+    position: relative;
+  }
+
+  /* Desativa o glow centralizado padrão do .page-hero pra esta página */
+  .about-hero::before { display: none; }
+
+  /* Glow assimétrico próprio: à direita atrás da logo 3D */
+  .about-hero__bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .about-hero__bg::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background:
+      radial-gradient(45% 60% at 60% 40%, rgba(56, 189, 248, 0.18), transparent 70%),
+      radial-gradient(35% 45% at 70% 60%, rgba(29, 78, 216, 0.14), transparent 70%);
+    filter: blur(40px);
+  }
+
+  .about-hero__grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 1100px;
+    position: relative;
+    z-index: 2;
+  }
+  .about-hero__lead {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: none;
+  }
+
+  /* Visual: container relativo pra ter glow próprio atrás do model-viewer */
+  .about-hero__visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .about-hero__visual-glow {
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    background:
+      radial-gradient(50% 50% at 50% 50%, rgba(56, 189, 248, 0.28), transparent 70%);
+    filter: blur(30px);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .logo-3d {
+    width: 100%;
+    max-width: 360px;
+    height: 360px;
+    background: transparent;
+    --poster-color: transparent;
+    /* Esconde a barra de progresso cinza que aparece durante o load do .glb */
+    --progress-bar-color: transparent;
+    --progress-bar-height: 0px;
+    --progress-mask: transparent;
+    filter:
+      drop-shadow(0 0 30px rgba(56, 189, 248, 0.35))
+      drop-shadow(0 16px 32px rgba(15, 23, 42, 0.3));
+  }
+
+  @media (max-width: 900px) {
+    .about-hero { text-align: center; padding: 40px 0 32px; }
+    .about-hero__grid { grid-template-columns: 1fr; gap: 28px; }
+    .about-hero__lead { margin-left: auto; margin-right: auto; max-width: 640px; }
+    .about-hero__bg::after {
+      width: 100%;
+      background:
+        radial-gradient(50% 40% at 50% 30%, rgba(56, 189, 248, 0.18), transparent 70%);
+    }
+  }
+  @media (max-width: 640px) {
+    .logo-3d { max-width: 240px; height: 240px; }
+  }
+</style>

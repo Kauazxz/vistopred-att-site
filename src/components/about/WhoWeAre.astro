@@ -1,0 +1,178 @@
+---
+/**
+ * Destaques institucionais — montados a partir de informações reais
+ * que já existem no texto da página Sobre (sem inventar dados novos).
+ */
+const highlights = [
+  {
+    label: "Desde 2017",
+    desc: "Startup criada com o objetivo de facilitar manutenção e vistoria predial.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
+  },
+  {
+    label: "Vistorias completas",
+    desc: "Pré-vistorias prediais, industriais e patrimoniais ágeis e completas.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="m8 11 2 2 4-4"/></svg>`,
+  },
+  {
+    label: "Manutenção preventiva",
+    desc: "Identifique e resolva problemas antes que se tornem críticos.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+  },
+  {
+    label: "Inteligência artificial",
+    desc: "Tecnologias avançadas pra digitalizar e automatizar processos de manutenção predial.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/><circle cx="12" cy="12" r="4"/></svg>`,
+  },
+];
+---
+
+<section class="page-section who-we-are">
+  <div class="page-container who-we-are__grid">
+    <div class="who-we-are__copy">
+      <span class="page-section__eyebrow" data-reveal="up">Quem somos</span>
+      <h2 class="page-section__title" data-reveal="up" style="--reveal-delay: 80ms">
+        Tecnologia a serviço da gestão técnica predial
+      </h2>
+
+      <p class="who-we-are__p" data-reveal="up" style="--reveal-delay: 160ms">
+        A VistoPred é uma plataforma especializada em gestão e gerenciamento de edificações e
+        vistorias prediais, com forte ênfase em manutenção preventiva e soluções baseadas em
+        inteligência artificial.
+      </p>
+
+      <p class="who-we-are__p" data-reveal="up" style="--reveal-delay: 220ms">
+        Para isso, utilizamos tecnologias avançadas e inteligência artificial para oferecer
+        soluções inteligentes e eficientes para a digitalização e automação de processos de
+        manutenção predial.
+      </p>
+
+      <p class="who-we-are__p" data-reveal="up" style="--reveal-delay: 280ms">
+        Com o nosso aplicativo, o VistoPred, os usuários têm acesso a pré-vistorias ágeis e
+        completas, permitindo que identifiquem e resolvam problemas de manutenção antes que eles
+        se tornem críticos.
+      </p>
+    </div>
+
+    {/* Painel institucional com destaques (substitui o 2º model-viewer) */}
+    <aside class="page-card who-we-are__panel" data-reveal="right" style="--reveal-delay: 200ms">
+      <div class="who-we-are__panel-head">
+        <span class="who-we-are__panel-dot" aria-hidden="true"></span>
+        <span class="who-we-are__panel-tag">Pilares VistoPred</span>
+      </div>
+
+      <ul class="who-we-are__highlights">
+        {highlights.map((h, i) => (
+          <li
+            class="who-we-are__hl"
+            data-reveal="up"
+            style={`--reveal-delay: ${300 + i * 80}ms`}
+          >
+            <div class="who-we-are__hl-icon" set:html={h.icon} />
+            <div>
+              <div class="who-we-are__hl-label">{h.label}</div>
+              <div class="who-we-are__hl-desc">{h.desc}</div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .who-we-are__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .who-we-are__p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 0 0 14px;
+    font-size: 15px;
+  }
+
+  /* === Painel institucional === */
+  .who-we-are__panel {
+    padding: 26px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Acento gradient no topo do card */
+  .who-we-are__panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.6), transparent);
+  }
+
+  .who-we-are__panel-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .who-we-are__panel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 10px var(--brand);
+  }
+  .who-we-are__panel-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brand);
+  }
+
+  .who-we-are__highlights {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 18px;
+  }
+  .who-we-are__hl {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .who-we-are__hl-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
+    color: var(--brand);
+    display: grid;
+    place-items: center;
+  }
+  .who-we-are__hl-label {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 3px;
+  }
+  .who-we-are__hl-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  /* === Responsivo === */
+  @media (max-width: 1024px) {
+    .who-we-are__grid { grid-template-columns: 1fr; gap: 32px; }
+    .who-we-are__panel { max-width: 540px; }
+  }
+  @media (max-width: 480px) {
+    .who-we-are__panel { padding: 22px 20px; }
+    .who-we-are__hl-icon { width: 36px; height: 36px; border-radius: 10px; }
+    .who-we-are__hl-icon svg { width: 18px; height: 18px; }
+  }
+</style>

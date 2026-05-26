@@ -1,0 +1,363 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+const { posts } = Astro.props as {
+  posts: CollectionEntry<"blog">[];
+};
+---
+
+<div class="blog-grid" id="blogGrid">
+  {posts.map((p) => (
+    <article
+      class="blog-card"
+      data-post
+      data-slug={p.slug}
+      data-title={p.data.title}
+      data-excerpt={p.data.excerpt}
+      data-category={p.data.category}
+      data-author={p.data.author}
+      data-date={p.data.date}
+      data-cover={p.data.cover}
+    >
+      {/* COVER */}
+      <div class="blog-card-cover">
+        <img src={p.data.cover} alt={p.data.title} loading="lazy" />
+        <span class="blog-badge">{p.data.category}</span>
+      </div>
+
+      {/* BODY */}
+      <div class="blog-card-body">
+        <h3>{p.data.title}</h3>
+        <p>{p.data.excerpt}</p>
+
+        {/* TAGS */}
+        {p.data.tags?.length ? (
+          <div class="blog-tags">
+            {(p.data.tags ?? []).slice(0, 3).map((t) => (
+              <span class="blog-tag">
+                <span
+                  class="material-symbols-rounded"
+                  aria-hidden="true"
+                >
+                  sell
+                </span>
+                {t}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        {/* META */}
+        <div class="blog-meta">
+          <span class="meta-item">
+            <span
+              class="material-symbols-rounded"
+              aria-hidden="true"
+            >
+              person
+            </span>
+            {p.data.author}
+          </span>
+
+          <span class="meta-item">
+            <span
+              class="material-symbols-rounded"
+              aria-hidden="true"
+            >
+              calendar_month
+            </span>
+            {new Date(p.data.date).toLocaleDateString("pt-BR")}
+          </span>
+
+          <a
+            class="meta-arrow"
+            href={`/blog/${p.slug}`}
+            aria-label="Ler postagem completa"
+          >
+            <span
+              class="material-symbols-rounded"
+              aria-hidden="true"
+            >
+              arrow_forward
+            </span>
+          </a>
+        </div>
+      </div>
+    </article>
+  ))}
+</div>
+
+<nav class="blog-pagination" aria-label="Paginação do blog">
+  <button class="blog-page-btn" id="blogPrev" type="button" aria-label="Página anterior">
+    ‹
+  </button>
+
+  <div class="blog-page-numbers" id="blogPageNumbers"></div>
+
+  <button class="blog-page-btn" id="blogNext" type="button" aria-label="Próxima página">
+    ›
+  </button>
+</nav>
+
+
+<script is:inline>
+  function qs(id) {
+    return document.getElementById(id);
+  }
+
+  function openModalFromCard(card) {
+    const modal = qs("blogModal");
+    if (!modal) return;
+
+    const slug = card.dataset.slug || "";
+    const title = card.dataset.title || "";
+    const excerpt = card.dataset.excerpt || "";
+    const category = card.dataset.category || "";
+    const author = card.dataset.author || "";
+    const date = card.dataset.date || "";
+    const cover = card.dataset.cover || "";
+
+    const mCover = qs("blogModalCover");
+    const mBadge = qs("blogModalBadge");
+    const mTitle = qs("blogModalTitle");
+    const mMeta = qs("blogModalMeta");
+    const mExcerpt = qs("blogModalExcerpt");
+    const modalLink = qs("blogModalLink");
+
+    if (mCover) mCover.src = cover || "";
+    if (mBadge) mBadge.textContent = category || "";
+    if (mTitle) mTitle.textContent = title || "";
+    if (mMeta)
+      mMeta.textContent = `${author} • ${
+        date ? new Date(date).toLocaleDateString("pt-BR") : ""
+      }`;
+    if (mExcerpt) mExcerpt.textContent = excerpt || "";
+    if (modalLink) modalLink.href = `/blog/${slug}`;
+
+    modal.setAttribute("data-open", "true");
+    document.documentElement.style.overflow = "hidden";
+  }
+
+  function closeModal() {
+    const modal = qs("blogModal");
+    if (!modal) return;
+    modal.removeAttribute("data-open");
+    document.documentElement.style.overflow = "";
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const grid = qs("blogGrid");
+    if (!grid) return;
+
+    // =========================
+    // PAGINAÇÃO (6 POR PÁGINA)
+    // =========================
+    const PER_PAGE = 6;
+
+    const prevBtn = qs("blogPrev");
+    const nextBtn = qs("blogNext");
+    const pageNumbers = qs("blogPageNumbers");
+    const pagination = document.querySelector(".blog-pagination");
+
+    let currentPage = 1;
+
+    const allCards = () => Array.from(grid.querySelectorAll("[data-post]"));
+
+    // cards considerados "ativos" (após filtro/busca)
+    // A lógica: se tiver data-match="0" (não bate), ele fica fora.
+    const activeCards = () =>
+      allCards().filter((c) => c.dataset.match !== "0");
+
+    function renderPageButtons(totalPages) {
+      if (!pageNumbers) return;
+      pageNumbers.innerHTML = "";
+
+      const maxButtons = 7;
+      let start = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+      let end = start + maxButtons - 1;
+
+      if (end > totalPages) {
+        end = totalPages;
+        start = Math.max(1, end - maxButtons + 1);
+      }
+
+      const addBtn = (p) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className =
+          "blog-page-number" + (p === currentPage ? " is-active" : "");
+        b.textContent = String(p);
+        b.addEventListener("click", () => {
+          currentPage = p;
+          applyPagination();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+        pageNumbers.appendChild(b);
+      };
+
+      const addDots = () => {
+        const s = document.createElement("span");
+        s.style.padding = "0 6px";
+        s.style.fontWeight = "800";
+        s.style.color = "#64748b";
+        s.textContent = "...";
+        pageNumbers.appendChild(s);
+      };
+
+      if (start > 1) {
+        addBtn(1);
+        if (start > 2) addDots();
+      }
+
+      for (let p = start; p <= end; p++) addBtn(p);
+
+      if (end < totalPages) {
+        if (end < totalPages - 1) addDots();
+        addBtn(totalPages);
+      }
+    }
+
+    function applyPagination() {
+      const cards = activeCards();
+      const total = cards.length;
+      const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+
+      if (currentPage > totalPages) currentPage = 1;
+
+      const start = (currentPage - 1) * PER_PAGE;
+      const end = start + PER_PAGE;
+
+      // 1) esconde TODOS
+      allCards().forEach((c) => {
+        c.style.display = "none";
+      });
+
+      // 2) mostra só os ativos da página atual
+      cards.forEach((c, idx) => {
+        c.style.display = idx >= start && idx < end ? "" : "none";
+      });
+
+      if (prevBtn) prevBtn.disabled = currentPage === 1;
+      if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+
+      renderPageButtons(totalPages);
+
+      if (pagination) pagination.style.display = total === 0 ? "none" : "flex";
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        if (currentPage > 1) {
+          currentPage--;
+          applyPagination();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        const totalPages = Math.max(
+          1,
+          Math.ceil(activeCards().length / PER_PAGE)
+        );
+        if (currentPage < totalPages) {
+          currentPage++;
+          applyPagination();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+
+    // =========================
+    // FILTRO + BUSCA (SE EXISTIR)
+    // =========================
+    const chips = document.querySelectorAll(".blog-chip");
+    const searchInput = qs("blogSearch");
+
+    let selectedCategory = "Todas";
+    let searchQuery = "";
+
+    function normalize(str) {
+      return String(str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function applyFilters() {
+      const q = normalize(searchQuery);
+      const cat = normalize(selectedCategory);
+
+      allCards().forEach((card) => {
+        const cardCat = normalize(card.dataset.category || "");
+        const title = normalize(card.dataset.title || "");
+        const excerpt = normalize(card.dataset.excerpt || "");
+
+        const matchesCategory =
+          cat === "todas" || (cardCat && cardCat === cat);
+
+        const matchesSearch =
+          !q || title.includes(q) || excerpt.includes(q);
+
+        // marca como "bate" ou "não bate"
+        card.dataset.match = matchesCategory && matchesSearch ? "1" : "0";
+      });
+
+      // sempre volta pra página 1 quando muda filtro/busca
+      currentPage = 1;
+      applyPagination();
+    }
+
+    // inicia todos como match=1
+    allCards().forEach((c) => (c.dataset.match = "1"));
+    applyPagination();
+
+    if (chips.length) {
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          selectedCategory = chip.dataset.category || "Todas";
+
+          chips.forEach((c) => c.classList.remove("is-active"));
+          chip.classList.add("is-active");
+
+          applyFilters();
+        });
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        searchQuery = searchInput.value || "";
+        applyFilters();
+      });
+    }
+
+    // =========================
+    // MODAL (CLIQUE NO CARD)
+    // =========================
+    grid.addEventListener("click", (e) => {
+      // deixa a seta navegar para o post completo
+      if (e.target.closest(".meta-arrow")) return;
+
+      const card = e.target.closest("[data-post]");
+      if (!card) return;
+
+      e.preventDefault();
+      openModalFromCard(card);
+    });
+
+    qs("blogModalClose")?.addEventListener("click", closeModal);
+
+    const modal = qs("blogModal");
+    modal?.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeModal();
+    });
+  });
+</script>
+
+

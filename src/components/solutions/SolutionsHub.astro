@@ -1,0 +1,731 @@
+---
+import { solutions, categoryLabels, type SolutionCategory } from "../../data/solutions";
+
+const orderedCats: SolutionCategory[] = [
+  "gestao",
+  "vistorias",
+  "manutencao",
+  "relatorios",
+  "equipe",
+  "documentos",
+  "comunicacao",
+];
+const activeCats = orderedCats.filter((c) => solutions.some((s) => s.category === c));
+
+/** Agrupa soluções por categoria pra renderizar accordion mobile + grid desktop */
+type Group = { cat: SolutionCategory | "all"; label: string; items: typeof solutions };
+const groups: Group[] = [
+  { cat: "all", label: "Todos", items: solutions },
+  ...activeCats.map((c) => ({
+    cat: c,
+    label: categoryLabels[c],
+    items: solutions.filter((s) => s.category === c),
+  })),
+];
+---
+
+<section class="page-section hub-section">
+  <div class="page-container">
+    {/* === Busca === */}
+    <div class="hub-search-wrap" data-reveal="up">
+      <label class="hub-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input
+          type="search"
+          id="hubSearch"
+          placeholder="Buscar solução…"
+          autocomplete="off"
+        />
+        <button type="button" class="hub-search__clear" id="hubSearchClear" aria-label="Limpar busca" hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18M6 6l12 12"/>
+          </svg>
+        </button>
+      </label>
+    </div>
+
+    {/* === DESKTOP: Sidebar + grid === */}
+    <div class="hub-desktop" data-reveal="up">
+      <aside class="hub-sidebar" role="tablist" aria-label="Categorias de soluções">
+        <span class="hub-sidebar__label">Categorias</span>
+        {groups.map((g) => (
+          <button
+            type="button"
+            class={`hub-cat ${g.cat === "all" ? "is-active" : ""}`}
+            data-cat={g.cat}
+            role="tab"
+            aria-selected={g.cat === "all" ? "true" : "false"}
+          >
+            <span class="hub-cat__name">{g.label}</span>
+            <span class="hub-cat__count">{g.items.length}</span>
+          </button>
+        ))}
+      </aside>
+
+      <div class="hub-content" id="hubContent">
+        {/* Renderiza 1x todos os 43 cards (no painel "Todos"). Filtros desktop
+            mostram/escondem via JS através de data-category. Sem duplicação. */}
+        <div class="hub-cards" id="hubCards">
+          {solutions.map((s) => (
+            <article
+              class="hub-card"
+              data-category={s.category}
+              data-search-key={`${s.title} ${s.description} ${categoryLabels[s.category]}`.toLowerCase()}
+            >
+              <div class="hub-card__head">
+                <div class="hub-card__icon" aria-hidden="true">
+                  <span class="material-symbols-rounded">{s.icon}</span>
+                </div>
+                <span class="hub-card__tag">{categoryLabels[s.category]}</span>
+              </div>
+              <h3 class="hub-card__title">{s.title}</h3>
+              <p class="hub-card__short">{s.shortDescription}</p>
+              <div class="hub-card__detail">
+                <p>{s.description}</p>
+              </div>
+              <button type="button" class="hub-card__toggle" aria-expanded="false">
+                <span class="hub-card__toggle-text">Ver detalhes</span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </button>
+            </article>
+          ))}
+        </div>
+
+        <p class="hub-empty" id="hubEmpty" hidden>
+          Nenhuma solução encontrada para esse filtro.
+        </p>
+      </div>
+    </div>
+
+    {/* === MOBILE: Accordion por categoria (sem "Todos" — accordion já mostra tudo) === */}
+    <div class="hub-mobile" data-reveal="up">
+      {activeCats.map((cat, idx) => {
+        const items = solutions.filter((s) => s.category === cat);
+        return (
+          <details class="hub-acc" data-cat={cat} open={idx === 0}>
+            <summary class="hub-acc__header">
+              <span class="hub-acc__name">{categoryLabels[cat]}</span>
+              <span class="hub-acc__count">{items.length}</span>
+              <svg class="hub-acc__chevron" width="16" height="16" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </summary>
+            <div class="hub-acc__body">
+              {items.map((s) => (
+                <article
+                  class="hub-card"
+                  data-category={s.category}
+                  data-search-key={`${s.title} ${s.description} ${categoryLabels[s.category]}`.toLowerCase()}
+                >
+                  <div class="hub-card__head">
+                    <div class="hub-card__icon" aria-hidden="true">
+                      <span class="material-symbols-rounded">{s.icon}</span>
+                    </div>
+                    <span class="hub-card__tag">{categoryLabels[s.category]}</span>
+                  </div>
+                  <h3 class="hub-card__title">{s.title}</h3>
+                  <p class="hub-card__short">{s.shortDescription}</p>
+                  <div class="hub-card__detail">
+                    <p>{s.description}</p>
+                  </div>
+                  <button type="button" class="hub-card__toggle" aria-expanded="false">
+                    <span class="hub-card__toggle-text">Ver detalhes</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                  </button>
+                </article>
+              ))}
+            </div>
+          </details>
+        );
+      })}
+      <p class="hub-empty hub-empty--mobile" id="hubEmptyMobile" hidden>
+        Nenhuma solução encontrada para esse filtro.
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  /**
+   * Central de Soluções — sidebar+grid (desktop) + accordion (mobile).
+   * - Desktop: clique numa categoria filtra os cards.
+   * - Mobile: <details> nativo + JS pra "uma aberta por vez".
+   * - Busca: filtra cards em ambos os modos por título/descrição/categoria.
+   * - Expansão: clique em "Ver detalhes" abre painel inline com descrição completa.
+   */
+
+  const sidebarBtns = document.querySelectorAll<HTMLButtonElement>(".hub-cat");
+  const desktopCards = document.querySelectorAll<HTMLElement>("#hubCards .hub-card");
+  const mobileAccs = document.querySelectorAll<HTMLDetailsElement>(".hub-acc");
+  const mobileAccCards = document.querySelectorAll<HTMLElement>(".hub-acc .hub-card");
+  const emptyDesktop = document.getElementById("hubEmpty");
+  const emptyMobile = document.getElementById("hubEmptyMobile");
+  const searchEl = document.getElementById("hubSearch") as HTMLInputElement | null;
+  const searchClear = document.getElementById("hubSearchClear");
+
+  let activeCat = "all";
+  let searchTerm = "";
+
+  function applyFilters() {
+    // Desktop
+    let visibleDesktop = 0;
+    desktopCards.forEach((card) => {
+      const matchesCat = activeCat === "all" || card.dataset.category === activeCat;
+      const matchesSearch =
+        !searchTerm || (card.dataset.searchKey || "").includes(searchTerm);
+      const visible = matchesCat && matchesSearch;
+      card.classList.toggle("is-hidden", !visible);
+      if (visible) visibleDesktop++;
+    });
+    if (emptyDesktop) emptyDesktop.hidden = visibleDesktop > 0;
+
+    // Mobile (accordion). Busca filtra individualmente os cards.
+    // Categoria não se aplica no mobile (cada acc é uma categoria).
+    let visibleMobile = 0;
+    let visibleAccs = 0;
+    mobileAccs.forEach((acc) => {
+      const cards = acc.querySelectorAll<HTMLElement>(".hub-card");
+      let accVisible = 0;
+      cards.forEach((card) => {
+        const matchesSearch =
+          !searchTerm || (card.dataset.searchKey || "").includes(searchTerm);
+        card.classList.toggle("is-hidden", !matchesSearch);
+        if (matchesSearch) {
+          accVisible++;
+          visibleMobile++;
+        }
+      });
+      // Se busca ativa e nenhum card visível na categoria, esconde o accordion inteiro
+      acc.style.display = accVisible > 0 ? "" : "none";
+      if (accVisible > 0) visibleAccs++;
+
+      // Se busca ativa, força abrir as categorias com resultado
+      if (searchTerm && accVisible > 0) acc.open = true;
+    });
+    if (emptyMobile) emptyMobile.hidden = visibleMobile > 0;
+  }
+
+  // Sidebar (desktop): troca categoria ativa
+  sidebarBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const cat = btn.dataset.cat || "all";
+      if (cat === activeCat) return;
+      activeCat = cat;
+      sidebarBtns.forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle("is-active", active);
+        b.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      applyFilters();
+      // Stagger animation: tira e re-coloca a classe pra re-disparar
+      const cards = document.querySelectorAll<HTMLElement>("#hubCards .hub-card:not(.is-hidden)");
+      cards.forEach((c, i) => {
+        c.style.animation = "none";
+        // force reflow
+        void c.offsetWidth;
+        c.style.animation = `hubFadeUp 380ms cubic-bezier(0.4, 0, 0.2, 1) ${Math.min(i, 12) * 30}ms both`;
+      });
+    });
+  });
+
+  // Accordion mobile: "uma aberta por vez"
+  mobileAccs.forEach((acc) => {
+    acc.addEventListener("toggle", () => {
+      if (acc.open && !searchTerm) {
+        mobileAccs.forEach((other) => {
+          if (other !== acc && other.open) other.open = false;
+        });
+      }
+    });
+  });
+
+  // Expansão de cards: "Ver detalhes" / "Ocultar"
+  document.querySelectorAll<HTMLButtonElement>(".hub-card__toggle").forEach((btn) => {
+    btn.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const card = btn.closest<HTMLElement>(".hub-card");
+      if (!card) return;
+      const open = card.classList.toggle("is-expanded");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      const txt = btn.querySelector<HTMLElement>(".hub-card__toggle-text");
+      if (txt) txt.textContent = open ? "Ocultar detalhes" : "Ver detalhes";
+    });
+  });
+
+  // Busca (debounced)
+  let searchTimer: number | null = null;
+  searchEl?.addEventListener("input", () => {
+    if (searchTimer !== null) clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(() => {
+      searchTerm = (searchEl.value || "").trim().toLowerCase();
+      if (searchClear) searchClear.hidden = !searchTerm;
+      applyFilters();
+    }, 120);
+  });
+
+  searchClear?.addEventListener("click", () => {
+    if (!searchEl) return;
+    searchEl.value = "";
+    searchTerm = "";
+    searchClear.hidden = true;
+    applyFilters();
+    searchEl.focus();
+  });
+
+  // Aplica filtro inicial (todos visíveis, primeiro accordion aberto)
+  applyFilters();
+</script>
+
+<style is:global>
+  /* === Hub Section ===
+     padding-top reduzido pra encostar visualmente no hero acima
+     (já que removemos o título/subtítulo internos). */
+  .hub-section {
+    padding-top: 16px;
+    padding-bottom: 56px;
+  }
+
+  /* === Busca === */
+  .hub-search-wrap {
+    max-width: 520px;
+    margin: 0 auto 32px;
+  }
+  .hub-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    border-radius: 12px;
+    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  }
+  [data-theme="dark"] .hub-search {
+    background: rgba(13, 19, 34, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .hub-search:focus-within {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+  }
+  .hub-search > svg { color: var(--text-muted); flex-shrink: 0; }
+  .hub-search input {
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    min-width: 0;
+  }
+  .hub-search input::placeholder { color: var(--text-muted); }
+  .hub-search__clear {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    color: var(--text-muted);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background 180ms ease, color 180ms ease;
+  }
+  .hub-search__clear:hover {
+    background: color-mix(in srgb, var(--brand) 18%, transparent);
+    color: var(--brand);
+  }
+
+  /* === DESKTOP: Layout sidebar + grid === */
+  .hub-desktop {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .hub-mobile { display: none; }
+
+  /* Sidebar */
+  .hub-sidebar {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  }
+  [data-theme="dark"] .hub-sidebar {
+    background: rgba(13, 19, 34, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 12px 32px rgba(0, 0, 0, 0.25);
+  }
+  .hub-sidebar__label {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 4px 10px 10px;
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    margin-bottom: 4px;
+  }
+
+  .hub-cat {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+  }
+  .hub-cat:hover {
+    background: color-mix(in srgb, var(--brand) 8%, transparent);
+    color: var(--brand);
+  }
+  .hub-cat.is-active {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.18) 0%, rgba(29, 78, 216, 0.18) 100%);
+    border-color: color-mix(in srgb, var(--brand) 35%, transparent);
+    color: var(--brand);
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.18);
+  }
+  [data-theme="dark"] .hub-cat.is-active {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(29, 78, 216, 0.22) 100%);
+    color: #fff;
+    border-color: rgba(56, 189, 248, 0.5);
+  }
+  .hub-cat__name { flex: 1; }
+  .hub-cat__count {
+    display: inline-grid;
+    place-items: center;
+    min-width: 22px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .hub-cat.is-active .hub-cat__count {
+    background: color-mix(in srgb, var(--brand) 25%, transparent);
+    color: var(--brand);
+  }
+  [data-theme="dark"] .hub-cat.is-active .hub-cat__count {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  /* === Grid de cards === */
+  .hub-content { position: relative; }
+  .hub-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .hub-card.is-hidden { display: none; }
+
+  /* Card */
+  .hub-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition:
+      transform 220ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 220ms ease,
+      box-shadow 220ms ease;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+  }
+  [data-theme="dark"] .hub-card {
+    background: rgba(13, 19, 34, 0.6);
+    border-color: rgba(56, 189, 248, 0.18);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 10px 28px rgba(0, 0, 0, 0.3);
+  }
+  .hub-card:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--brand) 50%, transparent);
+    box-shadow: 0 14px 32px rgba(56, 189, 248, 0.2);
+  }
+
+  .hub-card__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .hub-card__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--brand) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand) 28%, transparent);
+    color: var(--brand);
+    display: grid;
+    place-items: center;
+  }
+  [data-theme="dark"] .hub-card__icon {
+    color: #67e8f9;
+    background: color-mix(in srgb, var(--brand) 18%, transparent);
+    border-color: color-mix(in srgb, var(--brand) 45%, transparent);
+  }
+  .hub-card__icon .material-symbols-rounded { font-size: 22px; }
+
+  .hub-card__tag {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--brand);
+    background: color-mix(in srgb, var(--brand) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+  }
+
+  .hub-card__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  [data-theme="dark"] .hub-card__title { color: #fff; }
+
+  .hub-card__short {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--text-muted);
+  }
+  [data-theme="dark"] .hub-card__short { color: rgba(255, 255, 255, 0.75); }
+
+  /* Painel de detalhes (descrição completa) */
+  .hub-card__detail {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 320ms ease, opacity 220ms ease, margin 220ms ease;
+    margin: 0;
+  }
+  .hub-card__detail p {
+    margin: 0;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--brand) 6%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand) 16%, transparent);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  [data-theme="dark"] .hub-card__detail p {
+    background: rgba(56, 189, 248, 0.08);
+    border-color: rgba(56, 189, 248, 0.22);
+    color: rgba(255, 255, 255, 0.88);
+  }
+  .hub-card.is-expanded .hub-card__detail {
+    max-height: 400px;
+    opacity: 1;
+    margin: 4px 0 0;
+  }
+
+  /* Botão Ver detalhes / Ocultar */
+  .hub-card__toggle {
+    align-self: flex-start;
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px 6px 0;
+    border: none;
+    background: transparent;
+    color: var(--brand);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: gap 200ms ease, color 200ms ease;
+  }
+  .hub-card__toggle:hover { gap: 9px; }
+  .hub-card__toggle svg {
+    transition: transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hub-card.is-expanded .hub-card__toggle svg {
+    transform: rotate(180deg);
+  }
+
+  /* Estado vazio */
+  .hub-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    background: color-mix(in srgb, var(--text) 3%, transparent);
+    border: 1px dashed color-mix(in srgb, var(--text) 14%, transparent);
+    border-radius: 14px;
+  }
+
+  /* === Animação de entrada dos cards (disparada por JS) === */
+  @keyframes hubFadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* === Responsividade === */
+  @media (max-width: 1100px) {
+    .hub-desktop { grid-template-columns: 200px 1fr; gap: 22px; }
+    .hub-sidebar { padding: 14px; }
+    .hub-cards { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  }
+
+  /* === Tablet ~768-900px: sidebar vira chips no topo === */
+  @media (max-width: 900px) and (min-width: 769px) {
+    .hub-desktop {
+      grid-template-columns: 1fr;
+    }
+    .hub-sidebar {
+      position: relative;
+      top: 0;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px;
+    }
+    .hub-sidebar__label {
+      width: 100%;
+      padding-bottom: 6px;
+      margin-bottom: 0;
+    }
+    .hub-cat { width: auto; }
+  }
+
+  /* === MOBILE (<769): accordion === */
+  @media (max-width: 768px) {
+    .hub-desktop { display: none; }
+    .hub-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .hub-acc {
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color 220ms ease, box-shadow 220ms ease;
+    }
+    [data-theme="dark"] .hub-acc {
+      background: rgba(13, 19, 34, 0.6);
+      border-color: rgba(56, 189, 248, 0.18);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+    }
+    .hub-acc[open] {
+      border-color: color-mix(in srgb, var(--brand) 40%, transparent);
+    }
+
+    .hub-acc__header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      list-style: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 15px;
+      user-select: none;
+    }
+    .hub-acc__header::-webkit-details-marker { display: none; }
+    .hub-acc__name { flex: 1; }
+    .hub-acc__count {
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--brand) 14%, transparent);
+      color: var(--brand);
+      font-size: 11px;
+      font-weight: 700;
+      border: 1px solid color-mix(in srgb, var(--brand) 22%, transparent);
+    }
+    .hub-acc__chevron {
+      color: var(--text-muted);
+      transition: transform 240ms ease;
+    }
+    .hub-acc[open] .hub-acc__chevron {
+      transform: rotate(180deg);
+      color: var(--brand);
+    }
+    .hub-acc__body {
+      padding: 0 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: hubFadeUp 280ms ease-out;
+    }
+  }
+
+  /* === Mobile pequeno === */
+  @media (max-width: 480px) {
+    .hub-card { padding: 16px; }
+    .hub-card__title { font-size: 14.5px; }
+    .hub-card__short { font-size: 13px; }
+  }
+
+  /* === prefers-reduced-motion === */
+  @media (prefers-reduced-motion: reduce) {
+    .hub-card,
+    .hub-card__detail,
+    .hub-acc__body,
+    .hub-card__toggle svg,
+    .hub-acc__chevron {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

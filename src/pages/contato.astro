@@ -1,0 +1,371 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/pages.css";
+
+const contactEndpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? "";
+const contactMailto = import.meta.env.PUBLIC_CONTACT_MAILTO ?? "contato@vistopred.com.br";
+---
+
+<BaseLayout title="Contato | Vistopred">
+  <section class="page-hero">
+    <div class="page-hero__inner">
+      <span class="page-hero__eyebrow">Contato</span>
+      <h1 class="page-hero__title">Fale com a <em>VistoPred</em></h1>
+      <p class="page-hero__sub">
+        Envie uma mensagem e um consultor entra em contato. Se preferir, fale direto no WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <section class="page-section contact-section">
+    <div class="page-container contact-grid">
+      {/* Coluna 1: informações */}
+      <aside class="page-card contact-info">
+        <h2 class="contact-card__title">Informações</h2>
+
+        <div class="contact-item">
+          <div class="contact-item__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </div>
+          <div>
+            <strong>WhatsApp</strong>
+            <a href="https://wa.me/5524998773164" target="_blank" rel="noreferrer">(24) 99877-3164</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+          </div>
+          <div>
+            <strong>E-mail</strong>
+            <a href="mailto:contato@vistopred.com.br">contato@vistopred.com.br</a>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div>
+            <strong>Endereço</strong>
+            <p>Vitória – ES &nbsp;·&nbsp; Petrópolis – RJ</p>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-item__icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <strong>Horário</strong>
+            <p>Seg–Sex, 9h às 18h</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* Coluna 2: formulário */}
+      <div class="page-card contact-form-card">
+        <h2 class="contact-card__title">Enviar mensagem</h2>
+        <p class="contact-hint">Preencha os dados e descreva sua necessidade.</p>
+
+          <form
+            method="post"
+            action={contactEndpoint || `mailto:${contactMailto}`}
+            enctype="application/x-www-form-urlencoded"
+            class="form"
+            id="contactForm"
+            data-endpoint={contactEndpoint}
+            data-mailto={contactMailto}
+          >
+            <label>
+              Nome
+              <input name="name" required minlength="2" placeholder="Seu nome" />
+            </label>
+
+            <label>
+              E-mail
+              <input name="email" type="email" required placeholder="voce@exemplo.com" />
+            </label>
+
+            <label>
+              Telefone / WhatsApp
+              <input name="phone" placeholder="(00) 00000-0000" />
+            </label>
+
+            <label>
+              Assunto
+              <select name="subject" required>
+                <option value="" selected disabled>Selecione</option>
+                <option value="Demonstração">Solicitar demonstração</option>
+                <option value="Dúvidas">Dúvidas</option>
+                <option value="Suporte">Suporte</option>
+                <option value="Parceria">Parceria</option>
+              </select>
+            </label>
+
+            <label class="full">
+              Sou
+              <select name="role" required>
+                <option value="" selected disabled>Selecione</option>
+                <option value="Engenheiro">Engenheiro</option>
+                <option value="Administradora">Administradora</option>
+                <option value="Síndico">Síndico</option>
+                <option value="Morador">Morador</option>
+              </select>
+            </label>
+
+            <!-- Honeypot anti-spam (invisível) -->
+            <input
+              type="text"
+              name="website"
+              tabindex="-1"
+              autocomplete="off"
+              style="position:absolute; left:-9999px; width:1px; height:1px; opacity:0;"
+            />
+
+            <label class="full">
+              Mensagem
+              <textarea
+                name="message"
+                required
+                minlength="10"
+                rows="6"
+                placeholder="Explique o que você precisa..."
+              ></textarea>
+            </label>
+
+            <button type="submit" class="page-btn page-btn--primary full">Enviar</button>
+
+            <p class="form-status full" id="contactStatus" aria-live="polite"></p>
+
+            <p class="disclaimer">
+              Ao enviar, você concorda em ser contatado pela equipe Vistopred.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  <script>
+    const form = document.querySelector("#contactForm");
+    const statusEl = document.querySelector("#contactStatus");
+
+    if (form && statusEl) {
+      form.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+
+        const endpoint = form.dataset.endpoint || "";
+        const mailto = form.dataset.mailto || "contato@vistopred.com.br";
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+
+        formData.forEach((value, key) => {
+          params.append(key, String(value ?? ""));
+        });
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = "0.75";
+          submitBtn.style.cursor = "not-allowed";
+        }
+
+        statusEl.style.color = "#0f172a";
+        statusEl.textContent = endpoint
+          ? "Enviando..."
+          : "Abrindo seu e-mail...";
+
+        if (endpoint) {
+          let sent = false;
+          if (navigator.sendBeacon) {
+            const blob = new Blob([params.toString()], {
+              type: "application/x-www-form-urlencoded",
+            });
+            sent = navigator.sendBeacon(endpoint, blob);
+          }
+
+          if (!sent) {
+            try {
+              await fetch(endpoint, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: params.toString(),
+                keepalive: true,
+              });
+            } catch {
+              // Ignora erro para não bloquear o fluxo
+            }
+          }
+
+          statusEl.style.color = "#16a34a";
+          statusEl.textContent = "Mensagem enviada! Em breve entraremos em contato.";
+          form.reset();
+        } else {
+          const subject = formData.get("subject") || "Contato";
+          const body = [
+            `Nome: ${formData.get("name") || ""}`,
+            `E-mail: ${formData.get("email") || ""}`,
+            `Telefone: ${formData.get("phone") || ""}`,
+            `Sou: ${formData.get("role") || ""}`,
+            "",
+            `Mensagem:`,
+            `${formData.get("message") || ""}`,
+          ].join("\n");
+
+          const mailtoUrl =
+            `mailto:${mailto}` +
+            `?subject=${encodeURIComponent(String(subject))}` +
+            `&body=${encodeURIComponent(body)}`;
+
+          window.location.href = mailtoUrl;
+          statusEl.style.color = "#16a34a";
+          statusEl.textContent = "Mensagem pronta no seu e-mail.";
+        }
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = "1";
+          submitBtn.style.cursor = "pointer";
+        }
+      });
+    }
+  </script>
+
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .contact-card__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .contact-info { padding: 28px; }
+
+    .contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .contact-item__icon {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--brand) 14%, transparent);
+      color: var(--brand);
+      border: 1px solid color-mix(in srgb, var(--brand) 30%, transparent);
+    }
+    .contact-item strong {
+      display: block;
+      font-weight: 700;
+      color: var(--text);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .contact-item a {
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .contact-item a:hover { text-decoration: underline; }
+    .contact-item p {
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .contact-form-card { padding: 28px; }
+    .contact-hint {
+      margin: 6px 0 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      color: var(--text);
+      background: color-mix(in srgb, var(--text) 4%, transparent);
+      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      font-family: inherit;
+    }
+    [data-theme="dark"] input,
+    [data-theme="dark"] select,
+    [data-theme="dark"] textarea {
+      background: rgba(0, 0, 0, 0.25);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    textarea { resize: vertical; min-height: 120px; }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    .disclaimer {
+      grid-column: 1 / -1;
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .form-status {
+      margin: 2px 0 0;
+      font-weight: 700;
+      font-size: 13px;
+      min-height: 18px;
+    }
+
+    /* Responsivo */
+    @media (max-width: 880px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 18px; }
+      .form { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .contact-info,
+      .contact-form-card { padding: 22px 18px; }
+      input, select, textarea { font-size: 16px; }  /* evita zoom no iOS */
+    }
+  </style>
+</BaseLayout>

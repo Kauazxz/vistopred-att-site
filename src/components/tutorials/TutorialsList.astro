@@ -1,0 +1,124 @@
+---
+import { tutorials } from "../../data/tutorials";
+import TutorialCard from "./TutorialCard.astro";
+import VideoModal from "./VideoModal.astro";
+---
+
+<section class="page-section tutorials-section">
+  <div class="page-container">
+    <div class="page-section__head">
+      <span class="page-section__eyebrow">Biblioteca</span>
+      <h2 class="page-section__title">Todos os tutoriais</h2>
+      <p class="page-section__sub">
+        {tutorials.length} vídeos disponíveis para você aprender a usar o VistoPred do zero.
+      </p>
+    </div>
+
+    <div class="tutorials-grid" id="tutorials-grid">
+      {tutorials.map((t) => (
+        <TutorialCard
+          title={t.title}
+          description={t.description}
+          videoId={t.videoId}
+          duration={t.duration}
+        />
+      ))}
+    </div>
+  </div>
+</section>
+
+<VideoModal />
+
+<script is:inline>
+  // Função auxiliar para pegar os elementos
+  const getEls = () => {
+    return {
+      modal: document.getElementById("video-modal"),
+      iframe: document.getElementById("vmodal-iframe"),
+      titleLink: document.getElementById("vmodal-title"),
+      youtubeBtn: document.getElementById("vmodal-youtube"),
+      closeBtn: document.getElementById("vmodal-close"),
+    };
+  };
+
+  // Função para abrir a modal
+  function openModal(videoId, title, youtubeUrl) {
+    const els = getEls();
+    if (!els.modal || !els.iframe) return;
+
+    els.iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    
+    if (els.titleLink) {
+      els.titleLink.textContent = title;
+      els.titleLink.href = youtubeUrl;
+    }
+    
+    if (els.youtubeBtn) {
+      els.youtubeBtn.href = youtubeUrl;
+    }
+
+    els.modal.classList.remove("is-hidden");
+    els.modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+
+  // Função para fechar a modal
+  function closeModal() {
+    const els = getEls();
+    if (!els.modal || !els.iframe) return;
+
+    els.modal.classList.add("is-hidden");
+    els.modal.setAttribute("aria-hidden", "true");
+    els.iframe.src = "";
+    document.body.style.overflow = "";
+  }
+
+  // Escuta os cliques na página inteira
+  document.addEventListener("click", (e) => {
+    const target = e.target;
+    if (!target) return;
+
+    // 1. Se clicou no botão do YouTube (link externo), não faz nada (deixa abrir)
+    if (target.closest("a.card-btn-youtube")) return;
+
+    // 2. Verifica se clicou no botão "Assistir" OU na "Imagem" (.tutorial-thumb)
+    const playBtn = target.closest("button.card-btn-play");
+    const thumbImg = target.closest(".tutorial-thumb");
+
+    // Se clicou em um dos dois
+    if (playBtn || thumbImg) {
+      // Procura o Card pai para pegar os dados
+      const card = target.closest(".tutorial-card");
+      if (!card) return;
+
+      const videoId = card.getAttribute("data-video");
+      const title = card.getAttribute("data-title");
+      const youtubeUrl = card.getAttribute("data-youtube");
+
+      if (videoId && youtubeUrl) {
+        openModal(videoId, title, youtubeUrl);
+      }
+      return;
+    }
+
+    // 3. Fechar clicando no fundo escuro (backdrop)
+    const els = getEls();
+    if (els.modal && target === els.modal) {
+      closeModal();
+    }
+  });
+
+  // Botão X para fechar
+  const closeBtn = document.getElementById("vmodal-close");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeModal);
+  }
+
+  // Tecla ESC para fechar
+  document.addEventListener("keydown", (e) => {
+    const els = getEls();
+    if (e.key === "Escape" && els.modal && !els.modal.classList.contains("is-hidden")) {
+      closeModal();
+    }
+  });
+</script>

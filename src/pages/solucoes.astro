@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/pages.css";
+
+import SolutionHero from "../components/solutions/SolutionHero.astro";
+import SolutionsHub from "../components/solutions/SolutionsHub.astro";
+import SolutionsCta from "../components/solutions/SolutionsCta.astro";
+---
+
+<BaseLayout title="Soluções | Vistopred">
+  <SolutionHero
+    title="Conheça nossas funções e soluções"
+    subtitle="Transforme a sua gestão de Manutenção e Vistoria Predial com nosso aplicativo inovador e fácil de usar. Explore os módulos do VistoPred por categoria e veja como cada recurso apoia inspeções, manutenção, relatórios e gestão da edificação."
+  />
+  <SolutionsHub />
+  <SolutionsCta />
+</BaseLayout>
+
+<script>
+  /**
+   * Reveal-on-scroll scoped na página Soluções (mesmo sistema da página Sobre).
+   * Usa IntersectionObserver pra adicionar .is-in nos elementos [data-reveal].
+   */
+  const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+  if (els.length && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+  } else {
+    els.forEach((el) => el.classList.add("is-in"));
+  }
+</script>

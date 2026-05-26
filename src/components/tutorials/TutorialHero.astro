@@ -1,0 +1,13 @@
+---
+const { title = "Tutoriais VistoPred" } = Astro.props;
+---
+
+<section class="page-hero tutorials-hero">
+  <div class="page-hero__inner">
+    <span class="page-hero__eyebrow">Tutoriais</span>
+    <h1 class="page-hero__title">{title}</h1>
+    <p class="page-hero__sub">
+      <slot>Aprenda a usar todas as funcionalidades da plataforma através dos nossos vídeos tutoriais completos.</slot>
+    </p>
+  </div>
+</section>

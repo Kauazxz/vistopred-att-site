@@ -1,0 +1,171 @@
+---
+/**
+ * "Principais Funções" — Hexagonal Frame icons (5 cards).
+ * Cada card tem ícone próprio desenhado dentro de hex-frame com gradient.
+ * CTA no rodapé linka pra /solucoes (matriz completa de funcionalidades).
+ */
+const functions = [
+  {
+    title: "Otimize seu",
+    highlight: "Tempo",
+    text:
+      "Dê mais agilidade ao seu trabalho e mais produtividade ao seu tempo, com funcionalidades desenvolvidas especificamente para a gestão de edificações.",
+    icon: "clock",
+  },
+  {
+    title: "Organize tarefas com",
+    highlight: "praticidade",
+    text:
+      "Gerencie atividades e compromissos. Defina responsáveis, prazos, data e receba lembretes e notificações.",
+    icon: "checklist",
+  },
+  {
+    title: "Gerencie seu",
+    highlight: "pessoal",
+    text:
+      "Adicione funcionários, colaboradores e fornecedores, definindo tarefas e prazos e acompanhando o andamento pelo app.",
+    icon: "team",
+  },
+  {
+    title: "Armazene dados com",
+    highlight: "segurança",
+    text:
+      "Digitalize e armazene arquivos e documentos com total segurança. Acesse de onde estiver, em qualquer dispositivo conectado.",
+    icon: "shield",
+  },
+  {
+    title: "Crie um",
+    highlight: "histórico",
+    text:
+      "Mantenha um histórico de atividades, tarefas, manutenções e registros importantes da edificação, gerando transparência e clareza.",
+    icon: "building",
+  },
+];
+---
+
+<section class="lp-section lp-functions">
+  <div class="lp-functions__atmosphere" aria-hidden="true"></div>
+
+  <div class="lp-container">
+    <div class="lp-section-head" data-lp-reveal>
+      <span class="lp-eyebrow">Principais funções</span>
+      <h2 class="lp-h2">Tudo o que sua equipe precisa, em um só lugar</h2>
+      <p class="lp-lead">
+        Recursos pensados para acelerar inspeções, padronizar a manutenção e dar transparência
+        à gestão técnica de cada edificação.
+      </p>
+    </div>
+
+    <div class="lp-fn-grid">
+      {functions.map((f, i) => (
+        <article class="lp-fn-card lp-fn-card--svg-hex" style={`--i:${i}`} data-lp-reveal>
+          <span class="lp-fn-card__mark lp-fn-card__mark--tl" aria-hidden="true"></span>
+          <span class="lp-fn-card__mark lp-fn-card__mark--br" aria-hidden="true"></span>
+
+          <div class="lp-fn-card__head">
+            <span class="lp-fn-card__live" aria-hidden="true"></span>
+            <span class="lp-fn-card__num">{String(i + 1).padStart(2, "0")} / 05</span>
+          </div>
+
+          <span class="lp-fn-card__scan" aria-hidden="true"></span>
+
+          {/* ============ HEXAGONAL FRAME — todos os 5 ============ */}
+          <div class="lp-fn-card__icon lp-svg-hex">
+            <svg viewBox="0 0 88 88" aria-hidden="true">
+              <defs>
+                <linearGradient id={`hex-${i}`} x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%"   stop-color="var(--ic1)"/>
+                  <stop offset="100%" stop-color="var(--ic2)"/>
+                </linearGradient>
+              </defs>
+              {/* Hexágono externo */}
+              <polygon points="44,8 76,26 76,62 44,80 12,62 12,26"
+                       fill="none" stroke={`url(#hex-${i})`} stroke-width="1.5"
+                       opacity="0.5"/>
+              {/* Hexágono interno */}
+              <polygon points="44,18 67,32 67,56 44,70 21,56 21,32"
+                       fill="none" stroke={`url(#hex-${i})`} stroke-width="1.5"/>
+              {/* Vertex dots nos cantos */}
+              <g fill="var(--ic1)">
+                <circle cx="44" cy="8"  r="2"/>
+                <circle cx="76" cy="26" r="2"/>
+                <circle cx="76" cy="62" r="2"/>
+                <circle cx="44" cy="80" r="2"/>
+                <circle cx="12" cy="62" r="2"/>
+                <circle cx="12" cy="26" r="2"/>
+              </g>
+
+              {/* ============ GLYPHS por função ============ */}
+              {f.icon === "clock" && (
+                <g transform="translate(44 44)" fill="none" stroke="var(--ic1)"
+                   stroke-width="1.8" stroke-linecap="round">
+                  <circle cx="0" cy="0" r="11"/>
+                  <line x1="0" y1="0" x2="0" y2="-7"/>
+                  <line x1="0" y1="0" x2="5" y2="3"/>
+                  <circle cx="0" cy="0" r="1.5" fill="var(--ic1)"/>
+                </g>
+              )}
+
+              {f.icon === "checklist" && (
+                <g transform="translate(44 44)" fill="none" stroke="var(--ic1)"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="-9" y="-11" width="18" height="22" rx="2"/>
+                  <path d="M-5 -3 L-2 0 L4 -6"/>
+                  <path d="M-5 5 L-2 8 L4 2"/>
+                </g>
+              )}
+
+              {f.icon === "team" && (
+                <g transform="translate(44 44)" fill="var(--ic1)" stroke="var(--ic1)"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="0" cy="-4" r="3.5" fill="var(--ic1)"/>
+                  <path d="M-7 7 a7 5 0 0 1 14 0 z" fill="var(--ic1)"/>
+                  <circle cx="-9" cy="-1" r="2.5" fill="var(--ic1)" opacity="0.7"/>
+                  <circle cx="9"  cy="-1" r="2.5" fill="var(--ic1)" opacity="0.7"/>
+                </g>
+              )}
+
+              {f.icon === "shield" && (
+                <g transform="translate(44 44)" fill="none" stroke="var(--ic1)"
+                   stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M0 -12 L9 -8 V0 C9 6 5 10 0 12 C-5 10 -9 6 -9 0 V-8 Z"/>
+                  <path d="M-4 0 L-1 3 L4 -3"/>
+                </g>
+              )}
+
+              {f.icon === "building" && (
+                <g transform="translate(44 44)" fill="none" stroke="var(--ic1)"
+                   stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M-9 11 V-3 L0 -10 L9 -3 V11 Z"/>
+                  <line x1="-9" y1="11" x2="9" y2="11"/>
+                  <rect x="-2" y="4" width="4" height="7" fill="var(--ic1)" opacity="0.3"/>
+                  <rect x="-6" y="0" width="2" height="2"/>
+                  <rect x="-6" y="-4" width="2" height="2"/>
+                  <rect x="4"  y="0" width="2" height="2"/>
+                  <rect x="4"  y="-4" width="2" height="2"/>
+                </g>
+              )}
+            </svg>
+          </div>
+
+          <span class="lp-fn-card__divider" aria-hidden="true"></span>
+
+          <h3 class="lp-fn-card__title">
+            {f.title} <span class="lp-fn-card__hl">{f.highlight}</span>
+          </h3>
+          <p class="lp-fn-card__text">{f.text}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="lp-fn-footer" data-lp-reveal>
+      <a class="lp-btn lp-btn--ghost lp-btn--lg lp-fn-cta" href="/solucoes">
+        Ver matriz de funcionalidades completas
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
+          <path d="M5 12h14"></path>
+          <path d="M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

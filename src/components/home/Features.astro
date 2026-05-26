@@ -1,0 +1,27 @@
+---
+import { features } from "../../data/features.ts";
+---
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Principais Funções</h2>
+
+    <div class="features-grid">
+      {features.map((f) => (
+        <article class="feature-card">
+          <div class="feature-icon">
+            <img src={f.icon} alt="" loading="lazy" />
+          </div>
+
+          <h3>{f.title}</h3>
+          <p>{f.text}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="features-cta">
+  <a class="btn-outline" href="/solucoes">
+    Ver matriz completa de funções e soluções →
+  </a>
+</div>
+</section>

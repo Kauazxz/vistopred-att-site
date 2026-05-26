@@ -1,0 +1,37 @@
+---
+const { title, description, videoId, duration } = Astro.props;
+const youtubeUrl = `https://www.youtube.com/watch?v=${videoId}`;
+const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`; // hqdefault para aparecer todas as miniaturas
+---
+
+<article 
+  class="tutorial-card" 
+  data-video={videoId} 
+  data-title={title} 
+  data-youtube={youtubeUrl}
+  data-duration={duration}
+>
+  <div class="tutorial-thumb">
+    <img src={thumbnail} alt={title} loading="lazy" />
+    <div class="tutorial-thumb-overlay">
+      <span class="material-symbols-rounded">play_circle</span>
+    </div>
+    <span class="tutorial-duration">{duration}</span>
+  </div>
+
+  <div class="tutorial-body">
+    <h3 class="tutorial-title">{title}</h3>
+    <p class="tutorial-desc">{description}</p>
+
+    <div class="tutorial-actions">
+      <button type="button" class="card-btn-play">
+        <span class="material-symbols-rounded">play_circle</span>
+        Assistir Agora
+      </button>
+
+      <a class="card-btn-ext" href={youtubeUrl} target="_blank" rel="noopener noreferrer" title="Abrir no YouTube">
+        <span class="material-symbols-rounded">open_in_new</span>
+      </a>
+    </div>
+  </div>
+</article>

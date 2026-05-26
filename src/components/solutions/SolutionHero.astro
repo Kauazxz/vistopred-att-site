@@ -1,0 +1,31 @@
+---
+const {
+  title = "Conheça nossas funções e soluções",
+  subtitle = "Transforme a sua gestão de Manutenção e Vistoria Predial com nosso aplicativo inovador e fácil de usar, oferecendo soluções completas e personalizadas para atender às suas necessidades.",
+} = Astro.props;
+---
+
+<header class="page-hero solutions-hero">
+  <div class="page-hero__inner">
+    <span class="page-hero__eyebrow" data-reveal="up">Soluções</span>
+    <h1
+      class="page-hero__title solutions-hero-title"
+      data-reveal="up"
+      style="--reveal-delay: 100ms"
+    >{title}</h1>
+    <p
+      class="page-hero__sub solutions-hero-subtitle"
+      data-reveal="up"
+      style="--reveal-delay: 200ms"
+    >{subtitle}</p>
+  </div>
+</header>
+
+<style>
+  /* Padding top reduzido (igual ao About): header sticky já ocupa espaço,
+     não precisa de 140px de respiro padrão do .page-hero. */
+  .solutions-hero { padding: 56px 0 32px; }
+  @media (max-width: 880px) {
+    .solutions-hero { padding: 40px 0 24px; }
+  }
+</style>

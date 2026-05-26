@@ -1,0 +1,48 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import "../styles/landing.css";
+import "../styles/landing-hero-cinematic.css";
+
+import LandingHeroCinematic from "../components/home/landing/LandingHeroCinematic.astro";
+import LandingFunctions from "../components/home/landing/LandingFunctions.astro";
+import LandingSolution from "../components/home/landing/LandingSolution.astro";
+import LandingMockups from "../components/home/landing/LandingMockups.astro";
+import LandingFinalCta from "../components/home/landing/LandingFinalCta.astro";
+---
+
+<BaseLayout title="VistoPred — Inspeção, manutenção e relatórios prediais em um só app">
+  <div class="lp-shell">
+    <LandingHeroCinematic />
+    <LandingFunctions />
+    <LandingSolution />
+    <LandingMockups />
+    <LandingFinalCta />
+  </div>
+</BaseLayout>
+
+<script>
+  // Reveal-on-scroll
+  const els = document.querySelectorAll<HTMLElement>("[data-lp-reveal]");
+  if (els.length && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("is-visible");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -60px 0px" }
+    );
+    els.forEach((el) => io.observe(el));
+  } else {
+    els.forEach((el) => el.classList.add("is-visible"));
+  }
+
+  // Flutuação contínua do celular após chegar na posição (~800ms)
+  const stage = document.querySelector<HTMLElement>(".lpc-phone-stage");
+  if (stage && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    setTimeout(() => stage.classList.add("lpc-phone-stage--rest"), 800);
+  }
+</script>

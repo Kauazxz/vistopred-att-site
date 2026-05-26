@@ -1,0 +1,149 @@
+---
+import { Image } from "astro:assets";
+import { navigation } from "../../data/navigation";
+import logoIcon from "../../assets/brand/logo-full.svg";
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    {/* Pill central com logo (só ícone) + navegação */}
+    <nav class="hp-bar" id="siteNav" aria-label="Menu principal">
+      <a href="/" class="hp-logo" aria-label="VistoPred — ir para home">
+        <Image
+          src={logoIcon}
+          alt="VistoPred"
+          widths={[720, 1440]}
+          sizes="360px"
+          quality={95}
+          loading="eager"
+          decoding="async"
+        />
+      </a>
+      {navigation.map((item) => (
+        <a href={item.href} class={path === item.href ? "active" : ""}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    {/* Theme switch SEPARADO do nav — pill horizontal com thumb deslizante */}
+    <button
+      class="hp-switch"
+      type="button"
+      role="switch"
+      aria-checked="false"
+      aria-label="Alternar tema (claro/escuro)"
+      title="Alternar tema"
+    >
+      {/* Icon sol (lado esquerdo) */}
+      <span class="hp-switch__icon hp-switch__icon--sun" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+      </span>
+      {/* Icon lua (lado direito) */}
+      <span class="hp-switch__icon hp-switch__icon--moon" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </span>
+      {/* Thumb deslizante que indica o tema ativo */}
+      <span class="hp-switch__thumb" aria-hidden="true"></span>
+    </button>
+
+    {/* Logo MOBILE — só visível em ≤880px, centralizada entre hamburger e switch */}
+    <a href="/" class="hp-logo-mobile" aria-label="VistoPred — ir para home">
+      <Image
+        src={logoIcon}
+        alt="VistoPred"
+        widths={[560, 1120]}
+        sizes="280px"
+        quality={95}
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+
+    {/* Hamburger mobile — pill some no mobile */}
+    <button
+      class="hp-mobile-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="siteNav"
+      aria-label="Abrir menu"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="4" y1="7"  x2="20" y2="7"/>
+        <line x1="4" y1="12" x2="20" y2="12"/>
+        <line x1="4" y1="17" x2="20" y2="17"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>(".site-header");
+  const navToggle = document.querySelector<HTMLButtonElement>(".hp-mobile-toggle");
+  const bar = document.querySelector<HTMLElement>(".hp-bar");
+
+  // Mobile nav toggle
+  if (header && navToggle) {
+    navToggle.addEventListener("click", () => {
+      const open = header.getAttribute("data-open") === "true";
+      header.setAttribute("data-open", open ? "false" : "true");
+      navToggle.setAttribute("aria-expanded", open ? "false" : "true");
+    });
+
+    bar?.addEventListener("click", (ev) => {
+      const target = ev.target;
+      if (target instanceof Element && target.closest("a")) {
+        header.setAttribute("data-open", "false");
+        navToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  const themeBtn = document.querySelector<HTMLButtonElement>(".hp-switch");
+
+  function applyTheme(theme: "light" | "dark") {
+    const html = document.documentElement;
+    html.classList.add("theme-changing");
+    html.setAttribute("data-theme", theme);
+    themeBtn?.setAttribute("aria-checked", theme === "dark" ? "true" : "false");
+    void html.offsetWidth;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        html.classList.remove("theme-changing");
+      });
+    });
+  }
+
+  // Sincroniza aria-checked inicial com o tema já aplicado pelo BaseLayout
+  const initialTheme = document.documentElement.getAttribute("data-theme") || "light";
+  themeBtn?.setAttribute("aria-checked", initialTheme === "dark" ? "true" : "false");
+
+  themeBtn?.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") || "light";
+    const next = current === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try { localStorage.setItem("vp-theme", next); } catch (_) {}
+  });
+
+  // Acompanha o SO SÓ quando o usuário não tem escolha salva.
+  // Se já escolheu manualmente, o SO não interfere mais.
+  const mql = window.matchMedia("(prefers-color-scheme: dark)");
+  mql.addEventListener?.("change", (e) => {
+    try {
+      if (!localStorage.getItem("vp-theme")) {
+        applyTheme(e.matches ? "dark" : "light");
+      }
+    } catch (_) {
+      applyTheme(e.matches ? "dark" : "light");
+    }
+  });
+</script>

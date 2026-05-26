@@ -1,0 +1,116 @@
+---
+// Mockups SVG — light theme mostra o preto, dark theme mostra o branco
+const phoneDark  = "/images/home/screen-3.svg"; // celular preto
+const phoneWhite = "/images/home/screen-4.svg"; // celular branco
+---
+
+<section class="lpc-hero">
+  <div class="lp-container">
+    <div class="lpc-hero__grid">
+      <!-- Coluna de texto -->
+      <div class="lpc-hero__copy">
+        <span class="lp-eyebrow">Plataforma para inspeção e manutenção predial</span>
+        <h1 class="lpc-hero__title">
+          Torne sua Gestão de Manutenção e Vistoria Predial
+          <em>mais ágil e eficiente</em> com a nossa tecnologia
+        </h1>
+        <p class="lpc-hero__sub">
+          Atue em todas as etapas da sua gestão com mais eficiência e eficácia, através de uma
+          solução simples, prática e de fácil compreensão.
+        </p>
+        <div class="lpc-hero__ctas">
+          <a class="lp-btn lp-btn--primary lp-btn--lg" href="/contato">Solicitar demonstração</a>
+        </div>
+      </div>
+
+      <!-- Coluna visual: celular + cards -->
+      <div class="lpc-hero__visual" aria-hidden="true">
+        <div class="lpc-phone-stage">
+          {/* 2 SVGs empilhados, crossfade por tema:
+              - light → mostra screen-3 (celular preto)
+              - dark  → mostra screen-4 (celular branco) */}
+          <img
+            src={phoneDark}
+            alt="App VistoPred — tela de login"
+            class="lpc-phone-img lpc-phone-img--dark"
+            loading="eager"
+            decoding="async"
+          />
+          <img
+            src={phoneWhite}
+            alt=""
+            aria-hidden="true"
+            class="lpc-phone-img lpc-phone-img--white"
+            loading="eager"
+            decoding="async"
+          />
+
+        {/* Cards flutuantes — agora DENTRO do phone-stage pra grudarem
+            nas bordas do celular (não da coluna inteira). */}
+        <div class="lpc-floating lpc-floating--1">
+          <div class="lpc-floating__icon">
+            {/* clipboard-check */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <path d="m9 14 2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <div class="lpc-floating__title">Checklist concluído</div>
+            <div class="lpc-floating__sub">12/12 itens vistoriados</div>
+          </div>
+        </div>
+
+        <div class="lpc-floating lpc-floating--2">
+          <div class="lpc-floating__icon">
+            {/* camera */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/>
+              <circle cx="12" cy="13" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="lpc-floating__title">48 fotos organizadas</div>
+            <div class="lpc-floating__sub">Por ambiente e pavimento</div>
+          </div>
+        </div>
+
+        <div class="lpc-floating lpc-floating--3">
+          <div class="lpc-floating__icon">
+            {/* file-text */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <line x1="10" y1="9" x2="8" y2="9"/>
+            </svg>
+          </div>
+          <div>
+            <div class="lpc-floating__title">Relatório gerado</div>
+            <div class="lpc-floating__sub">PDF pronto em 30s</div>
+          </div>
+        </div>
+
+        <div class="lpc-floating lpc-floating--4">
+          <div class="lpc-floating__icon">
+            {/* wrench */}
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="lpc-floating__title">Manutenção em dia</div>
+            <div class="lpc-floating__sub">7 tarefas previstas</div>
+          </div>
+        </div>
+        </div>{/* /.lpc-phone-stage */}
+      </div>
+    </div>
+  </div>
+</section>

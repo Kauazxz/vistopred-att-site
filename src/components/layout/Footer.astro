@@ -1,0 +1,52 @@
+---
+import { Image } from "astro:assets";
+import logo from "../../assets/brand/logo-full.svg";
+
+const year = new Date().getFullYear();
+const whats = "https://wa.me/5524998773164";
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div class="site-footer__brand">
+      <Image
+        src={logo}
+        alt="Vistopred"
+        class="site-footer__logo"
+        widths={[120, 240]}
+        sizes="120px"
+        loading="lazy"
+        decoding="async"
+      />
+      <p class="site-footer__tag">
+        Plataforma de inspeção, manutenção e gestão técnica de edificações.
+      </p>
+    </div>
+
+    <div class="site-footer__cols">
+      <div>
+        <h4>Produto</h4>
+        <a href="/solucoes">Soluções</a>
+        <a href="/#planos">Planos</a>
+        <a href="/tutoriais">Tutoriais</a>
+        <a href="/downloads">Downloads</a>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <a href="/sobre">Sobre</a>
+        <a href="/blog">Blog</a>
+        <a href="/contato">Contato</a>
+      </div>
+      <div>
+        <h4>Fale com a gente</h4>
+        <a href={whats} target="_blank" rel="noopener">WhatsApp (24) 99877-3164</a>
+        <a href="mailto:contato@vistopred.com.br">contato@vistopred.com.br</a>
+        <span class="site-footer__small">Vitória – ES · Petrópolis – RJ</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="container site-footer__bottom">
+    © {year} Vistopred. Todos os direitos reservados.
+  </div>
+</footer>

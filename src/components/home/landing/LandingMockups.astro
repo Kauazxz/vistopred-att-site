@@ -1,0 +1,222 @@
+---
+/**
+ * SEÇÃO "Veja em ação" — Carrossel cinemático de telas do app.
+ *
+ * Inspiração: Cleo (phone central forte), Apple (perspectiva 3D), Linear
+ * (transições suaves), Stripe (camadas com profundidade).
+ *
+ * Layout:
+ *   - Pills/tabs no topo pra navegar entre as 6 telas
+ *   - Phone central GRANDE (tela ativa) com glow cyan ao fundo
+ *   - 2 phones laterais (anterior + próximo) menores, em perspectiva 3D
+ *   - Annotations flutuantes contextuais (mudam por tela)
+ *   - Counter "01/06" + barra de progresso do autoplay
+ *   - Auto-rotate 5s, pausa no hover
+ *   - Click em tab OU em phone lateral pra navegar
+ */
+const screens = [
+  {
+    id: 1,
+    src: "/images/home/screen-1.svg",
+    tab: "Inspeção",
+    title: "Inspeções organizadas",
+    desc: "Cadastre, edite e acompanhe inspeções com filtro rápido por edificação.",
+  },
+  {
+    id: 2,
+    src: "/images/home/screen-2.svg",
+    tab: "Painel",
+    title: "Painel da edificação",
+    desc: "Quadro de avisos com prioridade visual: ativos, em andamento e urgentes.",
+  },
+  {
+    id: 3,
+    src: "/images/home/screen-3.svg",
+    tab: "Checklist",
+    title: "Checklist em campo",
+    desc: "Checklists offline-first com módulos e qualificação dos itens.",
+  },
+  {
+    id: 4,
+    src: "/images/home/screen-4.svg",
+    tab: "Relatório",
+    title: "Relatório profissional",
+    desc: "PDF gerado em 30s com sua marca, pronto pra entregar ao cliente.",
+  },
+];
+---
+
+<section class="lp-section lp-showcase">
+  <div class="lp-container">
+    <div class="lp-section-head" data-lp-reveal>
+      <span class="lp-eyebrow">Veja em ação</span>
+      <h2 class="lp-h2">O VistoPred no celular do seu técnico</h2>
+      <p class="lp-lead">
+        Cada tela pensada pra uso real em campo: leve, offline-first e fácil até com luvas.
+      </p>
+    </div>
+
+    {/* Pills/tabs — navegação entre as telas */}
+    <div class="lp-showcase__tabs" role="tablist" aria-label="Telas do app">
+      {screens.map((s, i) => (
+        <button
+          type="button"
+          role="tab"
+          class={`lp-showcase__tab ${i === 0 ? "is-active" : ""}`}
+          data-index={i}
+          aria-selected={i === 0 ? "true" : "false"}
+        >
+          {s.tab}
+        </button>
+      ))}
+    </div>
+
+    {/* Palco 3D: phone central grande + 2 phones laterais em perspectiva */}
+    <div class="lp-showcase__stage">
+      {/* Glow cyan ao fundo, segue a tela ativa */}
+      <div class="lp-showcase__glow" aria-hidden="true"></div>
+
+      {/* Carrossel de phones — todos no mesmo lugar absoluto, posições via data-state */}
+      <div class="lp-showcase__rail">
+        {screens.map((s, i) => (
+          <div
+            class="lp-showcase__phone"
+            data-index={i}
+            data-state={i === 0 ? "active" : i === 1 ? "next" : i === screens.length - 1 ? "prev" : "hidden"}
+            aria-hidden={i !== 0 ? "true" : "false"}
+          >
+            {/* SVG cru — a própria imagem já vem com mockup do celular */}
+            <img src={s.src} alt={`Tela ${s.title}`} loading="lazy" decoding="async" />
+          </div>
+        ))}
+      </div>
+
+      {/* Annotations flutuantes — mostram detalhes da tela ATIVA */}
+      <div class="lp-showcase__annotations" aria-hidden="true">
+        {screens.map((s, i) => (
+          <div class={`lp-showcase__annotation ${i === 0 ? "is-active" : ""}`} data-index={i}>
+            <div class="lp-showcase__annotation-dot"></div>
+            <div class="lp-showcase__annotation-line"></div>
+            <div class="lp-showcase__annotation-card">
+              <div class="lp-showcase__annotation-title">{s.title}</div>
+              <div class="lp-showcase__annotation-desc">{s.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* Footer: arrow controls + counter + progress bar */}
+    <div class="lp-showcase__controls">
+      <button type="button" class="lp-showcase__arrow lp-showcase__arrow--prev" aria-label="Tela anterior">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+
+      <div class="lp-showcase__counter">
+        <span class="lp-showcase__counter-current">01</span>
+        <span class="lp-showcase__counter-sep">/</span>
+        <span class="lp-showcase__counter-total">0{screens.length}</span>
+      </div>
+
+      <div class="lp-showcase__progress" aria-hidden="true">
+        <div class="lp-showcase__progress-bar"></div>
+      </div>
+
+      <button type="button" class="lp-showcase__arrow lp-showcase__arrow--next" aria-label="Próxima tela">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const stage = document.querySelector<HTMLElement>(".lp-showcase__stage");
+  if (stage) {
+    const phones = stage.querySelectorAll<HTMLElement>(".lp-showcase__phone");
+    const tabs = document.querySelectorAll<HTMLButtonElement>(".lp-showcase__tab");
+    const annotations = document.querySelectorAll<HTMLElement>(".lp-showcase__annotation");
+    const prevBtn = document.querySelector<HTMLButtonElement>(".lp-showcase__arrow--prev");
+    const nextBtn = document.querySelector<HTMLButtonElement>(".lp-showcase__arrow--next");
+    const counterEl = document.querySelector<HTMLElement>(".lp-showcase__counter-current");
+    const progressBar = document.querySelector<HTMLElement>(".lp-showcase__progress-bar");
+    const total = phones.length;
+    let current = 0;
+    let autoplayTimer: number | null = null;
+    const AUTOPLAY_MS = 5000;
+
+    function setActive(next: number) {
+      current = ((next % total) + total) % total;
+      const prev = (current - 1 + total) % total;
+      const nxt = (current + 1) % total;
+
+      phones.forEach((p, i) => {
+        let state = "hidden";
+        if (i === current) state = "active";
+        else if (i === prev) state = "prev";
+        else if (i === nxt) state = "next";
+        p.setAttribute("data-state", state);
+        p.setAttribute("aria-hidden", i === current ? "false" : "true");
+      });
+
+      tabs.forEach((t, i) => {
+        t.classList.toggle("is-active", i === current);
+        t.setAttribute("aria-selected", i === current ? "true" : "false");
+      });
+
+      annotations.forEach((a, i) => {
+        a.classList.toggle("is-active", i === current);
+      });
+
+      if (counterEl) {
+        counterEl.textContent = String(current + 1).padStart(2, "0");
+      }
+
+      // Reseta a barra de progresso disparando reflow
+      if (progressBar) {
+        progressBar.style.animation = "none";
+        void progressBar.offsetWidth;
+        progressBar.style.animation = "";
+      }
+    }
+
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = window.setInterval(() => setActive(current + 1), AUTOPLAY_MS);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer !== null) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    }
+
+    // Click handlers
+    tabs.forEach((t, i) => t.addEventListener("click", () => { setActive(i); startAutoplay(); }));
+    phones.forEach((p, i) => p.addEventListener("click", () => { setActive(i); startAutoplay(); }));
+    prevBtn?.addEventListener("click", () => { setActive(current - 1); startAutoplay(); });
+    nextBtn?.addEventListener("click", () => { setActive(current + 1); startAutoplay(); });
+
+    // Pausa autoplay no hover no palco
+    stage.addEventListener("mouseenter", stopAutoplay);
+    stage.addEventListener("mouseleave", startAutoplay);
+
+    // Keyboard nav nas tabs (acessibilidade)
+    tabs.forEach((t) => {
+      t.addEventListener("keydown", (e: KeyboardEvent) => {
+        if (e.key === "ArrowRight") { setActive(current + 1); t.blur(); }
+        if (e.key === "ArrowLeft")  { setActive(current - 1); t.blur(); }
+      });
+    });
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      startAutoplay();
+    }
+  }
+</script>

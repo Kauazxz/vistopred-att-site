@@ -1,0 +1,42 @@
+---
+const pains = [
+  {
+    icon: "✕",
+    title: "Relatórios manuais que tomam horas",
+    text: "Planilhas dispersas, formatação refeita do zero e prazos apertados — sem padrão entre técnicos.",
+  },
+  {
+    icon: "?",
+    title: "Fotos perdidas no celular",
+    text: "Imagens espalhadas em pastas, WhatsApp e galeria, sem associação clara ao ambiente vistoriado.",
+  },
+  {
+    icon: "!",
+    title: "Histórico técnico inexistente",
+    text: "Difícil acompanhar manutenções, vistorias passadas e decisões tomadas em cada edificação.",
+  },
+];
+---
+
+<section class="lp-section lp-problem">
+  <div class="lp-container">
+    <div class="lp-section-head" data-lp-reveal>
+      <span class="lp-eyebrow">O problema</span>
+      <h2 class="lp-h2">A gestão técnica não precisa ser caótica</h2>
+      <p class="lp-lead">
+        Equipes de inspeção e manutenção perdem tempo demais com tarefas que poderiam ser
+        automatizadas. O custo invisível são prazos perdidos, retrabalho e clientes insatisfeitos.
+      </p>
+    </div>
+
+    <div class="lp-problem__grid">
+      {pains.map((p) => (
+        <article class="lp-pain" data-lp-reveal>
+          <div class="lp-pain__icon">{p.icon}</div>
+          <h3 class="lp-pain__title">{p.title}</h3>
+          <p class="lp-pain__text">{p.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,97 @@
+<section class="page-section mvv-section">
+  <div class="page-container">
+    <div class="page-section__head">
+      <span class="page-section__eyebrow" data-reveal="up">Nossa essência</span>
+      <h2 class="page-section__title" data-reveal="up" style="--reveal-delay: 80ms">
+        Missão, Visão e Valores
+      </h2>
+      <p class="page-section__sub" data-reveal="up" style="--reveal-delay: 160ms">
+        Os pilares que orientam cada decisão e cada entrega da VistoPred.
+      </p>
+    </div>
+
+    <div class="page-grid page-grid--3 mvv-grid">
+      <div class="page-card mvv-card" data-reveal="up" style="--reveal-delay: 0ms">
+        <div class="page-card__icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <h3 class="page-card__title">Missão</h3>
+        <p class="page-card__desc">
+          Proporcionar soluções diferenciadas através de uma plataforma intuitiva e de fácil
+          entendimento, com técnica e experiência de nossa equipe, garantindo a satisfação dos
+          nossos clientes.
+        </p>
+      </div>
+
+      <div class="page-card mvv-card" data-reveal="up" style="--reveal-delay: 120ms">
+        <div class="page-card__icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <h3 class="page-card__title">Visão</h3>
+        <p class="page-card__desc">
+          Ser referência no ramo de auto vistoria, atendendo cada vez melhor nossos clientes,
+          apresentando as melhores soluções e prazos.
+        </p>
+      </div>
+
+      <div class="page-card mvv-card" data-reveal="up" style="--reveal-delay: 240ms">
+        <div class="page-card__icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z"/>
+          </svg>
+        </div>
+        <h3 class="page-card__title">Valores</h3>
+        <ul class="mvv-values">
+          <li>Ética</li>
+          <li>Garantia</li>
+          <li>Experiência</li>
+          <li>Harmonia</li>
+          <li>Alta Eficiência</li>
+          <li>Responsabilidade</li>
+          <li>Inovação</li>
+          <li>Aprimoramento</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mvv-card {
+    position: relative;
+    /* Acento gradient no topo do card */
+  }
+  .mvv-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), transparent);
+    border-radius: inherit;
+  }
+
+  .mvv-values {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .mvv-values li {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--brand) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
+    color: var(--brand);
+    font-size: 12px;
+    font-weight: 600;
+  }
+</style>

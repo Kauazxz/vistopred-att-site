@@ -1,0 +1,121 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/pages.css";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((p) => ({ params: { slug: p.slug } }));
+}
+
+const posts = await getCollection("blog");
+const post = posts.find((p) => p.slug === Astro.params.slug);
+if (!post) throw new Error("Post não encontrado");
+
+const { Content } = await post.render();
+---
+
+<BaseLayout title={`${post.data.title} | Blog Vistopred`}>
+  <section class="page-section post-section">
+    <div class="page-container post-wrap">
+      <div class="post-cover">
+        <img src={post.data.cover} alt="" />
+        <span class="blog-badge">{post.data.category}</span>
+      </div>
+
+      <h1 class="post-title">{post.data.title}</h1>
+
+      <div class="post-meta">
+        <span class="meta-item">
+          <span class="material-symbols-rounded" aria-hidden="true">person</span>
+          {post.data.author}
+        </span>
+        <span class="meta-item">
+          <span class="material-symbols-rounded" aria-hidden="true">calendar_month</span>
+          {new Date(post.data.date).toLocaleDateString("pt-BR")}
+        </span>
+      </div>
+
+      <div class="post-content">
+        <Content />
+      </div>
+
+      <div class="post-tags">
+        <strong>Tags:</strong>
+        {post.data.tags.map((t) => <span class="blog-tag">{t}</span>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .post-wrap { max-width: 820px; }
+  .post-cover {
+    position: relative;
+    margin-bottom: 28px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  }
+  [data-theme="dark"] .post-cover {
+    background: rgba(20, 27, 46, 0.55);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  .post-cover img { width: 100%; height: auto; display: block; }
+
+  .post-title {
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin: 0 0 14px;
+  }
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .post-content {
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .post-content :global(p) { margin: 0 0 16px; color: var(--text); }
+  .post-content :global(h2) {
+    font-size: 22px;
+    margin: 28px 0 12px;
+    color: var(--text);
+    font-weight: 700;
+  }
+  .post-content :global(h3) {
+    font-size: 18px;
+    margin: 24px 0 10px;
+    color: var(--text);
+    font-weight: 700;
+  }
+  .post-content :global(a) { color: var(--brand); }
+  .post-content :global(img) { border-radius: 12px; margin: 16px 0; }
+  .post-content :global(ul),
+  .post-content :global(ol) { padding-left: 24px; margin: 0 0 16px; }
+  .post-content :global(blockquote) {
+    border-left: 3px solid var(--brand);
+    padding: 8px 0 8px 18px;
+    margin: 16px 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .post-tags {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .post-tags strong { color: var(--text); margin-right: 8px; }
+</style>

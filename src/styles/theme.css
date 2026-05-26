@@ -1,0 +1,106 @@
+/* ==========================================================================
+   THEME TOKENS — VistoPred (light + dark)
+   Carregado ANTES do global.css.
+   ========================================================================== */
+
+:root {
+  /* Cor base — modo claro (default) */
+  --bg: #f6f8fc;
+  --bg-elev: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --surface-glass: rgba(255, 255, 255, 0.72);
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-soft: #64748b;
+  --text-invert: #ffffff;
+
+  --brand: #2563eb;
+  --brand-strong: #1d4ed8;
+  --brand-soft: #dbeafe;
+  --accent: #0ea5e9;
+  --accent-2: #38bdf8;
+
+  --gradient-hero: radial-gradient(60% 60% at 50% 30%, rgba(56, 189, 248, 0.18), transparent 70%);
+  --gradient-cta: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+  --gradient-text: linear-gradient(120deg, #1d4ed8 0%, #0ea5e9 100%);
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 30px 80px -20px rgba(37, 99, 235, 0.35);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+  --radius-pill: 999px;
+
+  --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #070b15;
+  --bg-elev: #0d1322;
+  --surface: #111a2e;
+  --surface-2: #1a2238;
+  --surface-glass: rgba(20, 27, 46, 0.6);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #f1f5f9;
+  --text-muted: #cbd5e1;
+  --text-soft: #94a3b8;
+  --text-invert: #0f172a;
+
+  --brand: #38bdf8;
+  --brand-strong: #0ea5e9;
+  --brand-soft: rgba(56, 189, 248, 0.16);
+  --accent: #60a5fa;
+  --accent-2: #38bdf8;
+
+  --gradient-hero: radial-gradient(70% 65% at 50% 25%, rgba(56, 189, 248, 0.28), transparent 70%);
+  --gradient-cta: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
+  --gradient-text: linear-gradient(120deg, #38bdf8 0%, #1d4ed8 100%);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 30px 60px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 30px 90px -10px rgba(56, 189, 248, 0.45);
+
+  color-scheme: dark;
+}
+
+/* Tipografia base */
+html {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  background: var(--bg);
+  color: var(--text);
+  transition: background-color var(--transition), color var(--transition);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Durante o switch de tema, todas as transições são canceladas — evita
+   "stripe" momentânea causada por elementos transicionando em velocidades
+   diferentes (body com transition vs filhos sem). Classe é adicionada via JS
+   no Header.astro e removida no próximo frame. */
+.theme-changing,
+.theme-changing *,
+.theme-changing *::before,
+.theme-changing *::after {
+  transition: none !important;
+}

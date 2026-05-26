@@ -1,0 +1,120 @@
+---
+const solutions = [
+  "Vistorias, fotos e checklists conectados ao mesmo histórico",
+  "Relatórios gerados a partir dos registros feitos em campo",
+  "Manutenções organizadas por edificação, equipe e prazo",
+  "Documentos e evidências reunidos em uma única base técnica",
+  "Mais controle para engenheiros, administradoras e equipes operacionais",
+];
+
+/**
+ * Módulos que orbitam o card central do VistoPred.
+ * Cada módulo tem um label + ícone Lucide + descrição (tooltip).
+ * 8 módulos = 1 a cada 45° na órbita.
+ */
+const modules = [
+  {
+    label: "Vistorias",
+    desc: "Cadastro e acompanhamento de inspeções por edificação.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="m8 11 2 2 4-4"/></svg>`,
+  },
+  {
+    label: "Checklists",
+    desc: "Listas de verificação offline-first com qualificação.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>`,
+  },
+  {
+    label: "Fotos",
+    desc: "Galeria organizada por ambiente e pavimento.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>`,
+  },
+  {
+    label: "Relatórios",
+    desc: "PDF profissional gerado automaticamente.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  },
+  {
+    label: "Manutenção",
+    desc: "Ordens de serviço, preventivas e corretivas.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+  },
+  {
+    label: "Tarefas",
+    desc: "Acompanhe tarefas com prazos e prioridades.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>`,
+  },
+  {
+    label: "Equipe",
+    desc: "Atribua responsáveis e acompanhe entregas.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  },
+  {
+    label: "Histórico",
+    desc: "Linha do tempo completa de cada edificação.",
+    icon: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>`,
+  },
+];
+---
+
+<section class="lp-section lp-solution">
+  <div class="lp-container">
+    <div class="lp-solution__grid">
+      <div data-lp-reveal>
+        <span class="lp-eyebrow">Plataforma integrada</span>
+        <h2 class="lp-h2">
+          Uma plataforma integrada para centralizar toda a gestão técnica
+        </h2>
+        <p class="lp-lead">
+          Cada módulo do VistoPred trabalha conectado para transformar vistorias, fotos,
+          checklists, tarefas e relatórios em um histórico técnico organizado da edificação.
+        </p>
+
+        <ul class="lp-solution__list">
+          {solutions.map((s) => (
+            <li class="lp-solution__item">
+              <span class="lp-check">✓</span>
+              <span>{s}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* === Visual à direita: ecossistema VistoPred ===
+          - Card central com "VistoPred" + subtítulo
+          - 8 módulos orbitando ao redor (1 cada 45°)
+          - Órbita rotaciona lentamente (60s); cada módulo counter-rotate
+            pra manter texto legível
+          - Hover em módulo: tooltip explicativo aparece
+          - Mobile: vira grid 4×2 estático */}
+      <div class="lp-eco" data-lp-reveal aria-hidden="true">
+        {/* Anéis decorativos atrás dos módulos */}
+        <div class="lp-eco__rings" aria-hidden="true">
+          <div class="lp-eco__ring lp-eco__ring--outer"></div>
+          <div class="lp-eco__ring lp-eco__ring--inner"></div>
+        </div>
+
+        {/* Card central */}
+        <div class="lp-eco__core">
+          <div class="lp-eco__core-glow" aria-hidden="true"></div>
+          <div class="lp-eco__core-content">
+            <div class="lp-eco__core-title">VistoPred</div>
+            <div class="lp-eco__core-sub">Gestão técnica integrada</div>
+          </div>
+        </div>
+
+        {/* Órbita rotacionando — contém os 8 módulos */}
+        <div class="lp-eco__orbit">
+          {modules.map((m, i) => (
+            <div class="lp-eco__slot" style={`--i: ${i}; --total: ${modules.length};`}>
+              <div class="lp-eco__module" tabindex="0" data-label={m.label}>
+                <div class="lp-eco__module-icon" set:html={m.icon} />
+                <div class="lp-eco__module-label">{m.label}</div>
+                <div class="lp-eco__module-tip" role="tooltip">{m.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

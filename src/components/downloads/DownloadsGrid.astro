@@ -1,0 +1,490 @@
+---
+const items = [
+  {
+    title: "Checklist de Gestão Predial",
+    img: "/images/downloads/ebook-checklist-gestao.png",
+    material: "checklist_gestao",
+    file: "/downloads/Checklist de Gestão Predial da VistoPred.pdf",
+  },
+  {
+    title: "Manual de uso e operação",
+    img: "/images/downloads/capa manual de uso e operação.png",
+    material: "manual_uso",
+    file: "/downloads/Modelo para manual de uso e operação_pequenas reformas.pdf",
+  },
+  {
+    title: "Gestão de manutenção",
+    img: "/images/downloads/capa_ENGENHEIROS_gestão_manutenção.png",
+    material: "gestao_manutencao",
+    file: "/downloads/Gestão da manutenção predial para engenheiros.pdf",
+  },
+  {
+    title: "Proteção Contra Incêndios",
+    img: "/images/downloads/protecao-contra-incendios-veiculos-eletricos-3ed.jpg",
+    material: "protecao_incendios",
+    file: "/downloads/protecao-contra-incendios-veiculos-eletricos-3ed.pdf",
+  },
+];
+---
+
+<section class="page-section downloads-section">
+  <div class="page-container">
+    <div class="downloads-grid">
+      {items.map((it) => (
+        <article class="download-card">
+          <div class="download-cover">
+            <img src={it.img} alt={it.title} loading="lazy" />
+          </div>
+
+          <div class="download-body">
+            <h3 title={it.title}>{it.title}</h3>
+
+            <button
+              class="download-btn"
+              type="button"
+              data-material={it.material}
+              data-file={it.file}
+              data-title={it.title}
+            >
+              Baixar
+            </button>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="dl-modal" data-open="false" aria-hidden="true">
+  <div class="dl-modal__overlay" data-close></div>
+
+  <div class="dl-modal__panel" role="dialog" aria-modal="true" aria-labelledby="dlModalTitle">
+    <div class="dl-modal__header">
+      <div>
+        <h2 id="dlModalTitle">Enviar e baixar</h2>
+        <p class="dl-modal__subtitle" id="dlModalSub">Preencha para liberar o download.</p>
+      </div>
+
+      <button class="dl-modal__close" type="button" data-close aria-label="Fechar">✕</button>
+    </div>
+
+    <form class="dl-form" id="dlLeadForm">
+      <!-- honeypot (bots) -->
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" />
+
+      <input type="hidden" name="material" id="dlMaterial" />
+      <input type="hidden" name="file" id="dlFile" />
+      <input type="hidden" name="title" id="dlTitle" />
+      <input type="hidden" name="page" id="dlPage" />
+      <input type="hidden" name="ts" id="dlTs" />
+
+      <label class="dl-field">
+        <span>Nome</span>
+        <input name="name" id="dlName" required placeholder="Seu nome" />
+      </label>
+
+      <label class="dl-field">
+        <span>E-mail</span>
+        <input name="email" id="dlEmail" type="email" required placeholder="voce@exemplo.com" />
+      </label>
+
+      <label class="dl-field">
+        <span>Telefone / WhatsApp</span>
+        <input name="phone" id="dlPhone" required placeholder="(00) 00000-0000" />
+      </label>
+
+      <p class="dl-status" id="dlStatus" aria-live="polite"></p>
+
+      <button class="dl-submit" id="dlSubmit" type="submit">Enviar e baixar</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Helpers de tipo
+  const qs = <T extends Element>(sel: string, root: ParentNode = document) =>
+    root.querySelector(sel) as T | null;
+
+  const downloadEndpoint = import.meta.env.PUBLIC_DOWNLOAD_ENDPOINT ?? "";
+
+  const modal = qs<HTMLDivElement>(".dl-modal");
+  const statusEl = qs<HTMLParagraphElement>("#dlStatus");
+  const form = qs<HTMLFormElement>("#dlLeadForm");
+  const submitBtn = qs<HTMLButtonElement>("#dlSubmit");
+
+  const iMaterial = qs<HTMLInputElement>("#dlMaterial");
+  const iFile = qs<HTMLInputElement>("#dlFile");
+  const iTitle = qs<HTMLInputElement>("#dlTitle");
+  const iPage = qs<HTMLInputElement>("#dlPage");
+  const iTs = qs<HTMLInputElement>("#dlTs");
+  const sub = qs<HTMLParagraphElement>("#dlModalSub");
+
+  const nameInput = qs<HTMLInputElement>("#dlName");
+  const emailInput = qs<HTMLInputElement>("#dlEmail");
+  const phoneInput = qs<HTMLInputElement>("#dlPhone");
+  const hpInput = qs<HTMLInputElement>('input[name="website"]');
+
+  const openModal = () => {
+    if (!modal || !statusEl || !nameInput) return;
+    modal.dataset.open = "true";
+    modal.setAttribute("aria-hidden", "false");
+    statusEl.textContent = "";
+    document.body.style.overflow = "hidden";
+    window.setTimeout(() => nameInput.focus(), 60);
+  };
+
+  const closeModal = () => {
+    if (!modal) return;
+    modal.dataset.open = "false";
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  };
+
+  const triggerDownload = (fileUrl: string) => {
+    const url = encodeURI(fileUrl);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  document.addEventListener("click", (ev) => {
+    const target = ev.target as Element | null;
+    if (!target) return;
+
+    // Clique em Baixar
+    const btn = target.closest<HTMLButtonElement>(".download-btn");
+    if (btn) {
+      if (iMaterial) iMaterial.value = btn.dataset.material ?? "";
+      if (iFile) iFile.value = btn.dataset.file ?? "";
+      if (iTitle) iTitle.value = btn.dataset.title ?? "";
+      if (iPage) iPage.value = window.location.pathname;
+      if (iTs) iTs.value = new Date().toISOString();
+
+      if (sub && iTitle) sub.textContent = `Você está baixando: ${iTitle.value}`;
+      openModal();
+      return;
+    }
+
+    // Clique para fechar (overlay ou X)
+    if (target.matches("[data-close]") || target.closest("[data-close]")) {
+      closeModal();
+    }
+  });
+
+  document.addEventListener("keydown", (ev) => {
+    if (!modal) return;
+    if (ev.key === "Escape" && modal.dataset.open === "true") closeModal();
+  });
+
+  form?.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+
+    if (
+      !statusEl ||
+      !submitBtn ||
+      !nameInput ||
+      !emailInput ||
+      !phoneInput ||
+      !iMaterial ||
+      !iTitle ||
+      !iFile
+    ) {
+      return;
+    }
+
+    statusEl.style.color = "#0f172a";
+    statusEl.textContent = downloadEndpoint ? "Enviando..." : "Iniciando download...";
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = "0.75";
+    submitBtn.style.cursor = "not-allowed";
+
+    const payload = {
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      material: iMaterial.value,
+      title: iTitle.value,
+      file: iFile.value,
+      page: iPage?.value ?? window.location.pathname,
+      ts: iTs?.value ?? new Date().toISOString(),
+      website: hpInput?.value ?? "",
+    };
+
+    try {
+      if (downloadEndpoint) {
+        const params = new URLSearchParams();
+        Object.entries(payload).forEach(([key, value]) => {
+          params.append(key, String(value ?? ""));
+        });
+
+        let sent = false;
+        if (navigator.sendBeacon) {
+          const blob = new Blob([params.toString()], {
+            type: "application/x-www-form-urlencoded",
+          });
+          sent = navigator.sendBeacon(downloadEndpoint, blob);
+        }
+
+        if (!sent) {
+          try {
+            await fetch(downloadEndpoint, {
+              method: "POST",
+              mode: "no-cors",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: params.toString(),
+              keepalive: true,
+            });
+          } catch {
+            // Ignora erro para não bloquear o download
+          }
+        }
+
+        statusEl.style.color = "green";
+        statusEl.textContent = "Enviado! Iniciando download...";
+      } else {
+        statusEl.style.color = "green";
+        statusEl.textContent = "Iniciando download...";
+      }
+
+      triggerDownload(payload.file);
+
+      window.setTimeout(() => closeModal(), 900);
+      form.reset();
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = "1";
+      submitBtn.style.cursor = "pointer";
+    }
+  });
+</script>
+
+
+<style>
+  /* ======= Grid / Cards ======= */
+  .downloads-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+  }
+
+  .download-card {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 220ms ease, border-color 220ms ease;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  }
+  [data-theme="dark"] .download-card {
+    background: rgba(20, 27, 46, 0.55);
+    border-color: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 12px 32px rgba(0, 0, 0, 0.25);
+  }
+  .download-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(56, 189, 248, 0.18);
+    border-color: color-mix(in srgb, var(--brand) 40%, transparent);
+  }
+
+  .download-cover {
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.08), rgba(29, 78, 216, 0.08));
+    overflow: hidden;
+  }
+  .download-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+  .download-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    text-align: center;
+    border-top: 1px solid color-mix(in srgb, var(--text) 6%, transparent);
+  }
+
+  .download-body h3 {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.3;
+    color: var(--text);
+    font-weight: 700;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .download-btn {
+    height: 44px;
+    width: 100%;
+    max-width: 220px;
+    border: none;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 4px 14px rgba(56, 189, 248, 0.3);
+    transition: transform 180ms ease, box-shadow 220ms ease;
+  }
+  .download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      0 8px 22px rgba(56, 189, 248, 0.45);
+  }
+
+  @media (max-width: 640px) {
+    .download-cover { aspect-ratio: 3 / 4; }
+    .download-body { padding: 16px 14px; }
+  }
+
+  /* ======= Modal ======= */
+  .dl-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    place-items: center;
+    padding: 18px;
+    z-index: 9999;
+  }
+  .dl-modal[data-open="true"] { display: grid; }
+
+  .dl-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .dl-modal__panel {
+    position: relative;
+    width: min(520px, 100%);
+    background: var(--bg-elev, #fff);
+    border-radius: 18px;
+    border: 1px solid color-mix(in srgb, var(--brand) 25%, transparent);
+    box-shadow: 0 30px 90px rgba(0,0,0,.45);
+    overflow: hidden;
+  }
+  [data-theme="dark"] .dl-modal__panel {
+    background: rgba(20, 27, 46, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .dl-modal__header {
+    padding: 22px 22px 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  }
+  .dl-modal__header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--text);
+    font-weight: 700;
+  }
+  .dl-modal__subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .dl-modal__close {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    color: var(--text);
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .dl-modal__close:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+
+  .dl-form { padding: 18px 22px 22px; display: grid; gap: 14px; }
+
+  .dl-field span {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .dl-field input {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    padding: 0 14px;
+    outline: none;
+    font-size: 14px;
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    color: var(--text);
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+  [data-theme="dark"] .dl-field input {
+    background: rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  .dl-field input:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+  }
+
+  .dl-status {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    min-height: 18px;
+  }
+
+  .dl-submit {
+    height: 46px;
+    border: none;
+    border-radius: 999px;
+    font-weight: 700;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 4px 14px rgba(56, 189, 248, 0.3);
+    transition: transform 180ms ease, box-shadow 220ms ease;
+  }
+  .dl-submit:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.32),
+      0 8px 22px rgba(56, 189, 248, 0.45);
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px; height: 1px;
+    opacity: 0;
+  }
+</style>

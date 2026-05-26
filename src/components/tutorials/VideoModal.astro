@@ -1,0 +1,92 @@
+<style>
+  #video-modal.is-hidden { display: none; }
+
+  #video-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px); /* Efeito de vidro fosco no fundo */
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    z-index: 9999;
+  }
+
+  .video-modal-panel {
+    width: min(900px, 100%);
+    background: #fff;
+    border-radius: 24px; /* Bordas bem arredondadas como na imagem */
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .video-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+  }
+
+  #vmodal-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    text-decoration: none;
+  }
+
+  .video-modal-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .modal-icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #64748b;
+  }
+
+  .modal-icon-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+  }
+
+  .video-embed {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    background: #000;
+  }
+
+  .video-embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<div id="video-modal" class="is-hidden" aria-hidden="true">
+  <div class="video-modal-panel" role="dialog">
+    <div class="video-modal-header">
+      <a id="vmodal-title" href="#" target="_blank">Título do vídeo</a>
+      <div class="video-modal-actions">
+        <a id="vmodal-youtube" class="modal-icon-btn" href="#" target="_blank" title="YouTube">
+          <span class="material-symbols-rounded">open_in_new</span>
+        </a>
+        <button id="vmodal-close" class="modal-icon-btn" title="Fechar">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+    </div>
+    <div class="video-embed">
+      <iframe id="vmodal-iframe" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>

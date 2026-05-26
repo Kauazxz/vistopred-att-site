@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import "../../styles/pages.css";
+import BlogHero from "../../components/blog/BlogHero.astro";
+import BlogFilters from "../../components/blog/BlogFilters.astro";
+import BlogGrid from "../../components/blog/BlogGrid.astro";
+import BlogModal from "../../components/blog/BlogModal.astro";
+
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+posts.sort((a: any, b: any) => (a.data.date < b.data.date ? 1 : -1));
+---
+
+<BaseLayout title="Blog | Vistopred">
+  <BlogHero />
+
+  <section class="page-section blog-section">
+    <div class="page-container">
+      <BlogFilters />
+      <BlogGrid posts={posts} />
+    </div>
+  </section>
+
+  <BlogModal />
+</BaseLayout>
