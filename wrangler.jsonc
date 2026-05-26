@@ -1,0 +1,13 @@
+{
+  // Config do Cloudflare Workers — deploy do site estático Astro como Static Assets.
+  // O fluxo unificado Workers+Pages usa `npx wrangler deploy` lendo este arquivo;
+  // a chave `assets` faz Wrangler servir o conteúdo de ./dist como site estático,
+  // sem necessidade de escrever código de Worker.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "vistopred-att-site",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}
