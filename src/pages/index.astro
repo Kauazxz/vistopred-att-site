@@ -40,9 +40,10 @@ import LandingFinalCta from "../components/home/landing/LandingFinalCta.astro";
     els.forEach((el) => el.classList.add("is-visible"));
   }
 
-  // Flutuação contínua do celular após chegar na posição (~800ms)
+  // Flutuação contínua do celular: espera fim da entrada (40ms delay + 520ms duração = 560ms)
+  // antes de aplicar a classe que substitui a animação pela de flutuação infinita.
   const stage = document.querySelector<HTMLElement>(".lpc-phone-stage");
   if (stage && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    setTimeout(() => stage.classList.add("lpc-phone-stage--rest"), 800);
+    setTimeout(() => stage.classList.add("lpc-phone-stage--rest"), 580);
   }
 </script>

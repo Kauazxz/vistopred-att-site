@@ -1,7 +1,9 @@
 ---
-// Mockups SVG — light theme mostra o preto, dark theme mostra o branco
-const phoneDark  = "/images/home/screen-3.svg"; // celular preto
-const phoneWhite = "/images/home/screen-4.svg"; // celular branco
+// Mockups WebP — light theme mostra o preto, dark theme mostra o branco.
+// O do tema ativo carrega eager; o do outro tema é lazy (só baixa se o
+// usuário trocar de tema), evitando ~33KB inúteis no critical path.
+const phoneDark  = "/images/home/screen-3.webp"; // celular preto (light)
+const phoneWhite = "/images/home/screen-4.webp"; // celular branco (dark)
 ---
 
 <section class="lpc-hero">
@@ -34,15 +36,20 @@ const phoneWhite = "/images/home/screen-4.svg"; // celular branco
             alt="App VistoPred — tela de login"
             class="lpc-phone-img lpc-phone-img--dark"
             loading="eager"
+            fetchpriority="high"
             decoding="async"
+            width="900"
+            height="1200"
           />
           <img
             src={phoneWhite}
             alt=""
             aria-hidden="true"
             class="lpc-phone-img lpc-phone-img--white"
-            loading="eager"
+            loading="lazy"
             decoding="async"
+            width="900"
+            height="1200"
           />
 
         {/* Cards flutuantes — agora DENTRO do phone-stage pra grudarem
