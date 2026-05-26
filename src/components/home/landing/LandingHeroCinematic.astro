@@ -1,7 +1,9 @@
 ---
 // Mockups WebP — light theme mostra o preto, dark theme mostra o branco.
-// O do tema ativo carrega eager; o do outro tema é lazy (só baixa se o
-// usuário trocar de tema), evitando ~33KB inúteis no critical path.
+// AMBOS carregam eager: como o tema é definido inline antes do render via
+// localStorage/SO, não dá pra saber server-side qual usar. Ambos juntos são
+// só ~64KB, e fica garantido que o usuário vê o celular instantaneamente
+// independente do tema escolhido (sem flash de "celular sumindo").
 const phoneDark  = "/images/home/screen-3.webp"; // celular preto (light)
 const phoneWhite = "/images/home/screen-4.webp"; // celular branco (dark)
 ---
@@ -46,7 +48,8 @@ const phoneWhite = "/images/home/screen-4.webp"; // celular branco (dark)
             alt=""
             aria-hidden="true"
             class="lpc-phone-img lpc-phone-img--white"
-            loading="lazy"
+            loading="eager"
+            fetchpriority="high"
             decoding="async"
             width="900"
             height="1200"
