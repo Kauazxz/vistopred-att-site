@@ -124,39 +124,14 @@
    O phone-stage está centralizado dentro da coluna direita do grid 2-col;
    essa coluna fica ~25% do viewport à direita do centro. Limitamos a 300px
    pra viewports muito largos (onde o container está capado em 1200px). */
+/* Celular SEM animação de entrada — renderiza já na posição final junto com
+   o resto da página. Aplica direto a flutuação contínua (subida/descida leve),
+   que usa só transform: translateY (GPU-cheap, sem custo perceptível). */
 .lpc-phone-stage {
   position: relative;
-  --lpc-offset-x: min(25vw, 300px);
-  animation: lpcPhoneEnter 520ms cubic-bezier(0.6, 0.05, 0.2, 1) 40ms both;
   transform-origin: center;
-  will-change: transform, filter, opacity;
-}
-
-@keyframes lpcPhoneEnter {
-  0% {
-    opacity: 0;
-    transform: translateX(calc(var(--lpc-offset-x) * -1)) translateY(-2vh) scale(2.4);
-    filter: blur(14px) drop-shadow(0 40px 80px rgba(56, 189, 248, 0.55));
-  }
-  15% {
-    opacity: 1;
-    filter: blur(10px) drop-shadow(0 40px 80px rgba(56, 189, 248, 0.55));
-  }
-  55% {
-    filter: blur(2px) drop-shadow(0 30px 60px rgba(56, 189, 248, 0.45));
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) translateY(0) scale(1);
-    filter: blur(0) drop-shadow(0 20px 40px rgba(15, 23, 42, 0.3));
-  }
-}
-
-/* Após chegar, mantém leve flutuação contínua. O 0ms delay aqui é porque
-   o setTimeout no JS já espera o fim da entrada (~600ms) antes de adicionar
-   a classe — então a flutuação começa imediatamente quando ela aparece. */
-.lpc-phone-stage--rest {
-  animation: lpcPhoneFloat 6s ease-in-out 0ms infinite;
+  animation: lpcPhoneFloat 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes lpcPhoneFloat {
@@ -164,7 +139,9 @@
   50% { transform: translateY(-10px); }
 }
 
-/* Stage abriga os 2 mockups empilhados (posição relative no parent) */
+/* Stage abriga os 2 mockups empilhados (posição relative no parent).
+   O glow cyan/azul vem do ::before (radial-gradient estático), que é
+   muito mais barato que 3 drop-shadows empilhados no <img>. */
 .lpc-phone-stage {
   position: relative;
   width: 460px;
@@ -172,16 +149,27 @@
   margin: 0 auto;
 }
 
-/* Mockups SVG/WebP empilhados — crossfade por tema */
+.lpc-phone-stage::before {
+  content: "";
+  position: absolute;
+  inset: -6% -12%;
+  background:
+    radial-gradient(50% 50% at 50% 50%, rgba(56, 189, 248, 0.32), transparent 70%),
+    radial-gradient(60% 60% at 50% 60%, rgba(29, 78, 216, 0.22), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+  border-radius: 50%;
+}
+
+/* Mockups SVG/WebP empilhados — crossfade por tema.
+   1 drop-shadow só (sombra principal sob o aparelho). O glow cyan/azul
+   foi movido pro ::before do stage acima — gera muito menos custo de GPU. */
 .lpc-phone-img {
   width: 460px;
   height: auto;
   display: block;
   object-fit: contain;
-  filter:
-    drop-shadow(0 30px 80px rgba(0, 0, 0, 0.4))
-    drop-shadow(0 0 60px rgba(56, 189, 248, 0.45))
-    drop-shadow(0 0 120px rgba(29, 78, 216, 0.3));
+  filter: drop-shadow(0 24px 48px rgba(15, 23, 42, 0.35));
   transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -202,9 +190,11 @@
 /* ===== Cards flutuantes — só aparecem APÓS o celular pousar ===== */
 .lpc-floating {
   position: absolute;
-  background: var(--surface-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  /* Fundo quase-opaco em vez de backdrop-filter:blur(20px) — backdrop-filter
+     é um dos efeitos CSS mais caros (força recompositing GPU a cada frame de
+     animação no parent), e travava em GPUs integradas/celulares. Visualmente
+     o resultado fica quase idêntico graças à opacidade alta + borda. */
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 14px 16px;
@@ -220,7 +210,7 @@
 }
 
 [data-theme="dark"] .lpc-floating {
-  background: rgba(20, 27, 46, 0.85);
+  background: rgba(20, 27, 46, 0.96);
 }
 
 .lpc-floating__icon {
@@ -252,11 +242,12 @@
 
 /* Posições dos cards relativas ao .lpc-phone-stage (460px de largura no
    desktop). Cards meio sobre meio fora do celular pra criar overlap visual.
-   Delays escalonados em 60ms a partir de 420ms (logo após o celular pousar). */
-.lpc-floating--1 { top:  6%;  left:  -10%;  animation-delay: 420ms; }
-.lpc-floating--2 { top: 26%;  right: -12%;  animation-delay: 480ms; }
-.lpc-floating--3 { bottom: 22%; left:  -8%;  animation-delay: 540ms; }
-.lpc-floating--4 { bottom: 4%;  right: -6%;  animation-delay: 600ms; }
+   Delays escalonados em 60ms a partir de 120ms — sem esperar entrada do
+   celular (que foi removida): tudo aparece quase junto com a página. */
+.lpc-floating--1 { top:  6%;  left:  -10%;  animation-delay: 120ms; }
+.lpc-floating--2 { top: 26%;  right: -12%;  animation-delay: 180ms; }
+.lpc-floating--3 { bottom: 22%; left:  -8%;  animation-delay: 240ms; }
+.lpc-floating--4 { bottom: 4%;  right: -6%;  animation-delay: 300ms; }
 
 /* ===== Keyframes ===== */
 /* Termina em opacity 0 + visibility hidden — backdrop some por completo
@@ -306,28 +297,6 @@
 
   .lpc-hero__sub { margin-left: auto; margin-right: auto; }
   .lpc-hero__ctas { justify-content: center; }
-
-  /* No mobile: parte do centro vertical da viewport (translateY pra cima),
-     gigante e borrado, depois pousa em cima do texto. */
-  @keyframes lpcPhoneEnter {
-    0% {
-      opacity: 0;
-      transform: translateY(-15vh) scale(1.7);
-      filter: blur(12px) drop-shadow(0 40px 60px rgba(56, 189, 248, 0.5));
-    }
-    20% {
-      opacity: 1;
-      filter: blur(8px) drop-shadow(0 40px 60px rgba(56, 189, 248, 0.5));
-    }
-    60% {
-      filter: blur(2px) drop-shadow(0 30px 50px rgba(56, 189, 248, 0.4));
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      filter: blur(0) drop-shadow(0 20px 40px rgba(15, 23, 42, 0.3));
-    }
-  }
 }
 
 /* Cards menores em telas médias e pequenas, pra não cobrirem o celular */
@@ -362,10 +331,9 @@
   .lpc-floating--4 { bottom: 0%;  right: -8%; }
 }
 
-/* ===== Reduced motion: sem animação cinemática, tudo aparece direto ===== */
+/* ===== Reduced motion: tudo aparece direto, sem animação ===== */
 @media (prefers-reduced-motion: reduce) {
   .lpc-phone-stage,
-  .lpc-phone-stage--rest,
   .lpc-hero__copy,
   .lpc-hero__copy > *,
   .lpc-floating,
