@@ -124,14 +124,22 @@
    O phone-stage está centralizado dentro da coluna direita do grid 2-col;
    essa coluna fica ~25% do viewport à direita do centro. Limitamos a 300px
    pra viewports muito largos (onde o container está capado em 1200px). */
-/* Celular SEM animação de entrada — renderiza já na posição final junto com
-   o resto da página. Aplica direto a flutuação contínua (subida/descida leve),
-   que usa só transform: translateY (GPU-cheap, sem custo perceptível). */
+/* Celular: fade-in simples sincronizado com o resto da página (mesma janela
+   de tempo que .lpc-hero__copy — entra em 120ms+320ms), depois flutua infinito.
+   Duas animações em paralelo: opacity (entrada) + transform (flutuação).
+   Como animam propriedades diferentes, não conflitam. */
 .lpc-phone-stage {
   position: relative;
   transform-origin: center;
-  animation: lpcPhoneFloat 6s ease-in-out infinite;
-  will-change: transform;
+  animation:
+    lpcPhoneFadeIn 320ms cubic-bezier(0.4, 0, 0.2, 1) 120ms both,
+    lpcPhoneFloat 6s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes lpcPhoneFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes lpcPhoneFloat {
